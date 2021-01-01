@@ -1,3 +1,7 @@
+// Copyright 2021 Safecast.  All rights reserved.
+// Use of this source code is governed by licenses granted by the
+// copyright holder including that found in the LICENSE file.
+
 package main
 
 import (
@@ -11,12 +15,6 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"github.com/safecast/ttdata"
 )
-
-const mqttServer = "tcp://m14.cloudmqtt.com:17506"
-const mqttTopic = "device/#"
-const mqttQOS = 0
-const mqttUsername = "zxskatjq"
-const mqttPassword = "C0IVCvumIOSg"
 
 var eventQ chan ttdata.SafecastData
 
@@ -68,6 +66,7 @@ func mqttMessageReceived(client MQTT.Client, message MQTT.Message) {
 // mqttConnectHandler handles connections
 func mqttConnectHandler(c MQTT.Client) {
 	for {
+		mqttQOS := 0
 		token := c.Subscribe(mqttTopic, byte(mqttQOS), mqttMessageReceived)
 		token.Wait()
 		if token.Error() != nil {
@@ -85,10 +84,10 @@ func mqttEventQHandler(ch <-chan ttdata.SafecastData) {
 	for {
 
 		// Pull the event from the channel
-		e := <-ch
+		data := <-ch
 
 		// Process the event
-		fmt.Printf("Processing: %+v\n", e)
+		watcherPut(data)
 
 	}
 
