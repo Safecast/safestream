@@ -11,11 +11,7 @@ const mqttTopic = "device/#"
 const mqttUsername = "zxskatjq"
 const mqttPassword = "C0IVCvumIOSg"
 
-// httpHTTPPort (here for golint)
-const httpPort string = ":80"
-
 // httpPortAlternate (here for golint)
-const httpPortAlternate string = ":8888"
 
 // httpTopicMain0 (here for golint)
 const httpTopicMain0 string = "/"
@@ -34,3 +30,12 @@ const httpTopicStream1 string = "/stream"
 
 // httpTopicStream2 (here for golint)
 const httpTopicStream2 string = "/stream/"
+
+// filePathResources (here for golint)
+const filePathResources string = "/resources/"
+
+// Our server address
+var thisServerAddressIPv4 = ""
+
+// Our server port
+var thisServerPort = ":80"

@@ -153,7 +153,7 @@ window.addEventListener("load", function(evt) {
 	(function () {
 	  'use strict';
 
-	  const URL = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/Yodel_Sound_Effect.mp3';
+	  const URL = "yodel.mp3"
 
 	  const context = new AudioContext();
 

@@ -18,22 +18,15 @@ import (
 func httpInboundHandler() {
 
 	// Spin up misc handlers
-	http.HandleFunc(httpTopicMain0, httpMainHandler)
-	http.HandleFunc(httpTopicMain1, httpMainHandler)
-	http.HandleFunc(httpTopicMain2, httpMainHandler)
 	http.HandleFunc(httpTopicStream1, httpStreamHandler)
 	http.HandleFunc(httpTopicStream2, httpStreamHandler)
 	http.HandleFunc(httpTopicPing, httpPingHandler)
+	http.HandleFunc(httpTopicMain0, httpMainHandler)
+	http.HandleFunc(httpTopicMain1, httpMainHandler)
+	http.HandleFunc(httpTopicMain2, httpMainHandler)
 
-	// Listen on the alternate HTTP port, forcing IPV4 so we can do reverse lookup
-	go func() {
-		l, _ := net.Listen("tcp4", httpPortAlternate)
-		server := &http.Server{}
-		server.Serve(l)
-	}()
-
-	// Listen on the primary HTTP port, forcing IPV4 so we can do reverse lookup
-	l, _ := net.Listen("tcp4", httpPort)
+	// Listen forcing IPV4 so we can do reverse lookup
+	l, _ := net.Listen("tcp4", thisServerPort)
 	server := &http.Server{}
 	server.Serve(l)
 

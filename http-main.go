@@ -5,9 +5,10 @@
 package main
 
 import (
-	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -29,19 +30,39 @@ func httpMainHandler(rsp http.ResponseWriter, req *http.Request) {
 		target = strings.TrimSuffix(target, "/")
 	}
 
-	// Exit if just the favicon
-	if target == "favicon.ico" {
-		return
-	}
-
 	// Process
-	if method == "GET" {
+	if method == "GET" && target == "" {
 		streamLaunch(rsp, req)
 		return
 	}
 
+	// Attempt to load the resource
+	contents, _ := resourceRead(target)
+	rsp.Write(contents)
+
 	// Done
-	io.WriteString(rsp, fmt.Sprintf("unrecognized function\n"))
 	return
 
+}
+
+// Get a resource path
+func resourcePath(filename string) (path string) {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		return ""
+	}
+	path = dir + filePathResources + filename
+	return
+}
+
+// Get a resource URL
+func resourceURL(filename string) (url string) {
+	url = "http://" + thisServerAddressIPv4 + thisServerPort + "/" + filename
+	return
+}
+
+// Get a resource's contents
+func resourceRead(filename string) (contents []byte, err error) {
+	contents, err = ioutil.ReadFile(resourcePath(filename))
+	return
 }
