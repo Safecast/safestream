@@ -18,20 +18,27 @@ func main() {
 	// Get our external IP address
 	rsp, err := http.Get("http://checkip.amazonaws.com")
 	if err != nil {
-		fmt.Printf("Can't get our own IP address: %v\n", err)
-		os.Exit(0)
+		fmt.Printf("can't get our own IP address: %v\n", err)
+		os.Exit(-1)
 	}
 	defer rsp.Body.Close()
 	buf, err := ioutil.ReadAll(rsp.Body)
 	if err != nil {
-		fmt.Printf("Error fetching IP addr: %v\n", err)
-		os.Exit(0)
+		fmt.Printf("error fetching IP addr: %v\n", err)
+		os.Exit(-1)
 	}
 	thisServerAddressIPv4 = string(bytes.TrimSpace(buf))
 
 	// Get HTTP port
 	if len(os.Args) > 1 {
 		thisServerPort = ":" + os.Args[1]
+	}
+
+	// Load the template
+	err = streamInit()
+	if err != nil {
+		fmt.Printf("can't load template: %s\n", err)
+		os.Exit(-1)
 	}
 
 	// Start up the MQTT listener
