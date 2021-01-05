@@ -1,0 +1,64 @@
+## Copyright 2021 Safestream.  All rights reserved.
+## Use of this source code is governed by licenses granted by the
+## copyright holder including that found in the LICENSE file.
+
+##
+## TO CREATE A NEW INSTANCE
+##
+## 1. Create the instance of UBUNTU Server 16.04LTS, t2.micro using default settings
+##    so that it has a public IP address, and using safecastdev key
+## 2. Assign the correct security group, i.e.
+##    In Actions / Networking / Change Security Groups, select the TTSERVE security group and Assign Security Groups
+## 3. Add the instance to both the 80 and 8080 load balancer Target Groups
+## 4. Make sure that locally you have the safecastdev.pem key on your keychain ie
+##    ssh-add -K /keybase/private/rozzie,matschaffer/safecastdev.pem
+## 5. SSH into the instance using ubuntu@<instance-domain-name>
+##
+
+##
+## FIRST TIME INSTANCE SETUP PROCEDURE
+##
+
+## Update the updater
+sudo apt update
+## Install GIT so we can pull new versions
+sudo apt install git --assume-yes
+## Install GOLANG so we can rebuild our code
+sudo apt install golang-go --assume-yes
+## Upgrade to AT LEAST go 1.12 (for module support)
+## instructions: https://github.com/golang/go/wiki/Ubuntu
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt-get update
+sudo apt-get install golang-go
+## Verify that the version of GOLANG is at least go1.12
+go version
+
+## Add these to the end of ~/.profile with NANO editor
+export PATH=$PATH:/usr/local/go/bin
+
+## Fetch our app package
+cd ~
+git clone https://github.com/safecast/safestream
+
+## Use "crontab -e" and add this line
+@reboot screen -dmS safestream $HOME/safestream/run.sh
+
+## Just make sure everything is up to date
+sudo apt-get upgrade -y
+
+## Make sure that this linux instance doesn't run out of disk space because of accumulation of linux headers
+## in /usr/src by setting this to "true":
+sudo emacs /etc/apt/apt.conf.d/50unattended-upgrades
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+## By the way, if you ever need to clean up disk space because you forgot to do this:
+## remove a few folders in /usr/src manually via
+## sudo rm -rf linux-headers-4.4.0-101
+## now that there is space, download the LATEST headers
+## sudo apt-get -f install
+## now that the latest headers are installed, purge the older ones
+## sudo apt autoremove --purge
+## verify everything works after a restart
+## sudo shutdown -r 0
+
+## REBOOT THE AWS INSTANCE
+## You can then come back via SSH and use 'screen' to look around 

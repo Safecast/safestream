@@ -20,6 +20,7 @@ func httpInboundHandler() {
 	// Spin up misc handlers
 	http.HandleFunc(httpTopicStream1, httpStreamHandler)
 	http.HandleFunc(httpTopicStream2, httpStreamHandler)
+	http.HandleFunc(httpTopicGithub, httpGithubHandler)
 	http.HandleFunc(httpTopicPing, httpPingHandler)
 	http.HandleFunc(httpTopicMain0, httpMainHandler)
 	http.HandleFunc(httpTopicMain1, httpMainHandler)
