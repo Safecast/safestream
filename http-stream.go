@@ -73,7 +73,7 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 		// the HTTP client goes away
 		if len(data) == 0 {
 
-			s := time.Now().UTC().Format("2006-01-02T15:04:05Z") + " waiting for events\n"
+			s := "waiting for events\n"
 			err = c.WriteMessage(websocket.TextMessage, []byte(s))
 			if err != nil {
 				break
@@ -85,8 +85,9 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 			for _, sd := range data {
 				events := filterClassify(sd, ipinfo)
 				for _, e := range events {
-					s := fmt.Sprintf("%s %0.02f%% %s %.0fkm %s %s\n",
-						e.class, e.percent*100, e.summary,
+					s := fmt.Sprintf("%s%02d %0.02f%% %s %.0fkm %s %s\n",
+						e.class, int(e.percent*10),
+						e.percent*100, e.summary,
 						e.distance/1000, e.city, e.country)
 					err = c.WriteMessage(websocket.TextMessage, []byte(s))
 					if err != nil {
@@ -139,7 +140,7 @@ window.addEventListener("load", function(evt) {
     var output = document.getElementById("output");
     var input = document.getElementById("input");
 	var playButton = document.getElementById("play");
-	var p1 = document.getElementById("p1")
+	var header = document.getElementById("header");
 
     var ws;
 
@@ -158,6 +159,7 @@ window.addEventListener("load", function(evt) {
 	  const context = new AudioContext();
 
 	  let yodelBuffer;
+	  let resBuffer = new Map();
 
 	  window.fetch(URL)
 	    .then(response => response.arrayBuffer())
@@ -167,14 +169,130 @@ window.addEventListener("load", function(evt) {
 	      yodelBuffer = audioBuffer;
 	    });
 
+	  function load(resURL) {
+	  window.fetch(resURL)
+	    .then(response => response.arrayBuffer())
+	    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+	    .then(audioBuffer => {
+		  resBuffer.set(resURL, audioBuffer)
+	    });
+      }
+
+      load("air00.mp3")
+      load("air01.mp3")
+      load("air02.mp3")
+      load("air03.mp3")
+      load("air04.mp3")
+      load("air05.mp3")
+      load("air06.mp3")
+      load("air07.mp3")
+      load("air08.mp3")
+      load("air09.mp3")
+      load("air10.mp3")
+      load("rad00.mp3")
+      load("rad01.mp3")
+      load("rad02.mp3")
+      load("rad03.mp3")
+      load("rad04.mp3")
+      load("rad05.mp3")
+      load("rad06.mp3")
+      load("rad07.mp3")
+      load("rad08.mp3")
+      load("rad09.mp3")
+      load("rad10.mp3")
+
 		playButton.onclick = function(evt) {
 			playButton.style.display = "none";
-			play(yodelBuffer)
+			play(yodelBuffer);
 	        return false;
 		};
 
-		p1.onclick = function(evt) {
-			play(yodelBuffer)
+		air00.onclick = function(evt) {
+            play(resBuffer.get("air00.mp3"));
+	        return false;
+		};
+		air01.onclick = function(evt) {
+            play(resBuffer.get("air01.mp3"));
+	        return false;
+		};
+		air02.onclick = function(evt) {
+            play(resBuffer.get("air02.mp3"));
+	        return false;
+		};
+		air03.onclick = function(evt) {
+            play(resBuffer.get("air03.mp3"));
+	        return false;
+		};
+		air04.onclick = function(evt) {
+            play(resBuffer.get("air04.mp3"));
+	        return false;
+		};
+		air05.onclick = function(evt) {
+            play(resBuffer.get("air05.mp3"));
+	        return false;
+		};
+		air06.onclick = function(evt) {
+            play(resBuffer.get("air06.mp3"));
+	        return false;
+		};
+		air07.onclick = function(evt) {
+            play(resBuffer.get("air07.mp3"));
+	        return false;
+		};
+		air08.onclick = function(evt) {
+            play(resBuffer.get("air08.mp3"));
+	        return false;
+		};
+		air09.onclick = function(evt) {
+            play(resBuffer.get("air09.mp3"));
+	        return false;
+		};
+		air10.onclick = function(evt) {
+            play(resBuffer.get("air10.mp3"));
+	        return false;
+		};
+		rad00.onclick = function(evt) {
+            play(resBuffer.get("rad00.mp3"));
+	        return false;
+		};
+		rad01.onclick = function(evt) {
+            play(resBuffer.get("rad01.mp3"));
+	        return false;
+		};
+		rad02.onclick = function(evt) {
+            play(resBuffer.get("rad02.mp3"));
+	        return false;
+		};
+		rad03.onclick = function(evt) {
+            play(resBuffer.get("rad03.mp3"));
+	        return false;
+		};
+		rad04.onclick = function(evt) {
+            play(resBuffer.get("rad04.mp3"));
+	        return false;
+		};
+		rad05.onclick = function(evt) {
+            play(resBuffer.get("rad05.mp3"));
+	        return false;
+		};
+		rad06.onclick = function(evt) {
+            play(resBuffer.get("rad06.mp3"));
+	        return false;
+		};
+		rad07.onclick = function(evt) {
+            play(resBuffer.get("rad07.mp3"));
+	        return false;
+		};
+		rad08.onclick = function(evt) {
+            play(resBuffer.get("rad08.mp3"));
+	        return false;
+		};
+		rad09.onclick = function(evt) {
+            play(resBuffer.get("rad09.mp3"));
+	        return false;
+		};
+		rad10.onclick = function(evt) {
+            play(resBuffer.get("rad10.mp3"));
 	        return false;
 		};
 
@@ -192,15 +310,18 @@ window.addEventListener("load", function(evt) {
         }
         ws = new WebSocket("{{.}}");
         ws.onopen = function(evt) {
-            print("now listening for Safecast events");
+			header.style.display = "inline";
         }
         ws.onclose = function(evt) {
             print("connection closed");
             ws = null;
         }
         ws.onmessage = function(evt) {
-            print(evt.data);
-			p1.click()
+			header.style.display = "none";
+			var line = evt.data
+            print(line);
+			var firstWord = line.substr(0, line.indexOf(" "));
+			document.getElementById(firstWord).click()
         }
         ws.onerror = function(evt) {
             print("error: " + evt.data);
@@ -237,18 +358,7 @@ window.addEventListener("load", function(evt) {
 </script>
 </head>
 <body>
-<!--
-<p>Click "Open" to create a connection to the server,
-"Send" to send a message to the server and "Close" to close the connection.
-You can change the message and send multiple times.
-<p>
-<form>
-<button id="open">Open</button>
-<button id="close">Close</button>
-<p><input id="input" type="text" value="Hello world!">
-<button id="send">Send</button>
-</form>
--->
+<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
 <div id="output"></div>
 <div id="footer">
 <p><p>
@@ -260,7 +370,28 @@ You can change the message and send multiple times.
 -->
 <button id="play" disabled>Listen to Event Stream</button>
 <p hidden>
-<button id="p1">
+<button id="air00">
+<button id="air01">
+<button id="air02">
+<button id="air03">
+<button id="air04">
+<button id="air05">
+<button id="air06">
+<button id="air07">
+<button id="air08">
+<button id="air09">
+<button id="air10">
+<button id="rad00">
+<button id="rad01">
+<button id="rad02">
+<button id="rad03">
+<button id="rad04">
+<button id="rad05">
+<button id="rad06">
+<button id="rad07">
+<button id="rad08">
+<button id="rad09">
+<button id="rad10">
 </button>
 </form>
 </div>
