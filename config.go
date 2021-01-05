@@ -28,3 +28,9 @@ const httpTopicMain2 string = "/index.htm"
 
 // httpTopicPing (here for golint)
 const httpTopicPing string = "/ping"
+
+// httpTopicStream1 (here for golint)
+const httpTopicStream1 string = "/stream"
+
+// httpTopicStream2 (here for golint)
+const httpTopicStream2 string = "/stream/"

@@ -5,40 +5,68 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"sync"
 	"time"
 
+	"github.com/Safecast/TTDefs"
 	"github.com/google/uuid"
-	"github.com/safecast/ttdata"
 )
 
 // The active watcher data structure
 type activeWatcher struct {
 	watcherID string
+	ipinfo    IPInfoData
 	target    string
 	args      map[string]string
 	event     *Event
-	buf       []ttdata.SafecastData
+	buf       []TTDefs.SafecastData
 }
 
 var watchers = []activeWatcher{}
 var watcherLock sync.RWMutex
 
 // Create a new watcher
-func watcherCreate(target string, args map[string]string) (watcherID string) {
+func watcherCreate(requestorIP string, target string, args map[string]string) (watcherID string) {
 
+	// Create the watcher
 	watcherID = uuid.New().String()
-
 	watcher := activeWatcher{}
 	watcher.watcherID = watcherID
 	watcher.target = target
 	watcher.args = args
 	watcher.event = eventNew()
 
+	// For localhost debugging
+	if requestorIP == "127.0.0.1" {
+		requestorIP = "65.96.197.34"
+	}
+
+	// Look up info about the requestor
+	url := "http://ip-api.com/json/" + requestorIP
+	rsp, err := http.Get(url)
+	if err != nil {
+		fmt.Printf("%s: error getting location info: %s\n", requestorIP, err)
+	} else {
+		defer rsp.Body.Close()
+		buf, err := ioutil.ReadAll(rsp.Body)
+		if err != nil {
+			fmt.Printf("%s: error reading location info: %s\n", requestorIP, err)
+		} else {
+			err := json.Unmarshal(buf, &watcher.ipinfo)
+			if err != nil {
+				fmt.Printf("%s: error unmarshaling: %s\n", requestorIP, err)
+			}
+		}
+	}
+
+	// Add to queue of watchers
 	watcherLock.Lock()
 	watchers = append(watchers, watcher)
-	fmt.Printf("watchers: %s added (now %d)\n", watcher.target, len(watchers))
+	fmt.Printf("watchers: added (now %d)\n", len(watchers))
 	watcherLock.Unlock()
 
 	return
@@ -56,7 +84,7 @@ func watcherDelete(watcherID string) {
 			} else {
 				watchers = append(watchers[0:i], watchers[i+1:]...)
 			}
-			fmt.Printf("watchers: %s removed (now %d)\n", watcher.target, len(watchers))
+			fmt.Printf("watchers: removed (now %d)\n", len(watchers))
 			break
 		}
 	}
@@ -67,7 +95,7 @@ func watcherDelete(watcherID string) {
 }
 
 // Get data from a watcher
-func watcherGet(watcherID string, timeout time.Duration) (data []ttdata.SafecastData, err error) {
+func watcherGet(watcherID string, timeout time.Duration) (data []TTDefs.SafecastData, ipinfo IPInfoData, err error) {
 	var watcher activeWatcher
 
 	// Find the watcher
@@ -93,7 +121,8 @@ func watcherGet(watcherID string, timeout time.Duration) (data []ttdata.Safecast
 	for i := range watchers {
 		if watchers[i].watcherID == watcherID {
 			data = watchers[i].buf
-			watchers[i].buf = []ttdata.SafecastData{}
+			ipinfo = watchers[i].ipinfo
+			watchers[i].buf = []TTDefs.SafecastData{}
 			break
 		}
 	}
@@ -104,7 +133,7 @@ func watcherGet(watcherID string, timeout time.Duration) (data []ttdata.Safecast
 }
 
 // Append data from a watcher
-func watcherPut(data ttdata.SafecastData) {
+func watcherPut(data TTDefs.SafecastData) {
 
 	// Scan all watchers
 	watcherLock.Lock()

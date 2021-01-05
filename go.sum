@@ -1,3 +1,5 @@
+github.com/Safecast/TTDefs v0.0.0-20210102040726-c6f519e5fa68 h1:DXQbpepDQJNiBs+egUz/SZ36nKi5TzbgqmXKoZDn6dg=
+github.com/Safecast/TTDefs v0.0.0-20210102040726-c6f519e5fa68/go.mod h1:Hzuy6wcNNrN597yb1ht0Lgc6F5EniaWgEsHy1E3/CFk=
 github.com/blues/note-go v1.4.4 h1:YDkJPrTm6RtoIBQrmVo5tJS8gUpSELKsMw33k2ULCYk=
 github.com/blues/note-go v1.4.4/go.mod h1:WC/fU803bbKAmJNxf5cXqRkqjq377t+WThclC67tqkk=
 github.com/creack/goselect v0.1.1/go.mod h1:a/NhLweNvqIYMuxcMOuWY516Cimucms3DglDzQP3hKY=

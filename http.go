@@ -7,6 +7,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -20,15 +21,21 @@ func httpInboundHandler() {
 	http.HandleFunc(httpTopicMain0, httpMainHandler)
 	http.HandleFunc(httpTopicMain1, httpMainHandler)
 	http.HandleFunc(httpTopicMain2, httpMainHandler)
+	http.HandleFunc(httpTopicStream1, httpStreamHandler)
+	http.HandleFunc(httpTopicStream2, httpStreamHandler)
 	http.HandleFunc(httpTopicPing, httpPingHandler)
 
-	// Listen on the alternate HTTP port
+	// Listen on the alternate HTTP port, forcing IPV4 so we can do reverse lookup
 	go func() {
-		http.ListenAndServe(httpPortAlternate, nil)
+		l, _ := net.Listen("tcp4", httpPortAlternate)
+		server := &http.Server{}
+		server.Serve(l)
 	}()
 
-	// Listen on the primary HTTP port
-	http.ListenAndServe(httpPort, nil)
+	// Listen on the primary HTTP port, forcing IPV4 so we can do reverse lookup
+	l, _ := net.Listen("tcp4", httpPort)
+	server := &http.Server{}
+	server.Serve(l)
 
 }
 
