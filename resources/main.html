@@ -33,7 +33,7 @@ window.addEventListener("load", function(evt) {
 	  window.fetch(URL)
 	    .then(response => response.arrayBuffer())
 		.then(arrayBuffer => context.decodeAudioData(arrayBuffer,
-													 audiobuffer => {
+													 audioBuffer => {
 												      playButton.disabled = false;
 												      yodelBuffer = audioBuffer;
 													 },
