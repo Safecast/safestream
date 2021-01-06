@@ -23,6 +23,8 @@ window.addEventListener("load", function(evt) {
 	var yodelBuffer;
 	var resBuffer = new Map();
 
+	  var context = new (window.AudioContext || window.webkitAudioContext)();
+
 	  function play(audioBuffer) {
 	    const source = context.createBufferSource();
 	    source.buffer = audioBuffer;
@@ -34,8 +36,6 @@ window.addEventListener("load", function(evt) {
 	  'use strict';
 
 	  const URL = "yodel.mp3"
-
-	  var context = new (window.AudioContext || window.webkitAudioContext)();
 
 	  window.fetch(URL)
 	    .then(response => response.arrayBuffer())
