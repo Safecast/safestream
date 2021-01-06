@@ -33,8 +33,9 @@ func streamInit() (err error) {
 
 // Handle http requests to the root url
 func streamLaunch(rsp http.ResponseWriter, req *http.Request) {
+	isTLS := req.Header.Get("X-Forwarded-Proto") == "https"
 	scheme := "ws:"
-	if req.TLS != nil {
+	if isTLS {
 		scheme = "wss:"
 	}
 	url := scheme + "//" + req.Host + httpTopicStream1 + req.URL.String()
