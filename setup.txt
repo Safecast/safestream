@@ -20,21 +20,26 @@
 ##
 
 ## Update the updater
+sudo apt-get upgrade -y
 sudo apt update
 ## Install GIT so we can pull new versions
 sudo apt install git --assume-yes
 ## Install GOLANG so we can rebuild our code
 sudo apt install golang-go --assume-yes
-## Upgrade to AT LEAST go 1.12 (for module support)
+go version
+## If not AT LEAST go 1.12 (for module support)
 ## instructions: https://github.com/golang/go/wiki/Ubuntu
+sudo apt-get remote golang-go
 sudo add-apt-repository ppa:longsleep/golang-backports
 sudo apt-get update
 sudo apt-get install golang-go
-## Verify that the version of GOLANG is at least go1.12
 go version
 
-## Add these to the end of ~/.profile with NANO editor
-export PATH=$PATH:/usr/local/go/bin
+## Install emacs (or the editor of your choice)
+sudo apt-get install emacs
+
+### OZZIE ## Add these to the end of ~/.profile with NANO editor
+### OZZIE export PATH=$PATH:/usr/local/go/bin
 
 ## Fetch our app package
 cd ~
@@ -43,13 +48,11 @@ git clone https://github.com/safecast/safestream
 ## Use "crontab -e" and add this line
 @reboot screen -dmS safestream $HOME/safestream/run.sh
 
-## Just make sure everything is up to date
-sudo apt-get upgrade -y
-
 ## Make sure that this linux instance doesn't run out of disk space because of accumulation of linux headers
 ## in /usr/src by setting this to "true":
 sudo emacs /etc/apt/apt.conf.d/50unattended-upgrades
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
 ## By the way, if you ever need to clean up disk space because you forgot to do this:
 ## remove a few folders in /usr/src manually via
 ## sudo rm -rf linux-headers-4.4.0-101
@@ -61,4 +64,5 @@ Unattended-Upgrade::Remove-Unused-Dependencies "true";
 ## sudo shutdown -r 0
 
 ## REBOOT THE AWS INSTANCE
+sudo shutdown -r 0
 ## You can then come back via SSH and use 'screen' to look around 
