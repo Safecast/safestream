@@ -39,9 +39,6 @@ func streamLaunch(rsp http.ResponseWriter, req *http.Request) {
 		scheme = "wss:"
 	}
 	url := scheme + "//" + req.Host + httpTopicStream1 + req.URL.String()
-	fmt.Printf("url: %s\n", req.URL)
-	fmt.Printf("reqURI: %s\n", req.RequestURI)
-	fmt.Printf("upgrading: '%s'\n", url)
 	streamTemplate.Execute(rsp, url)
 }
 
