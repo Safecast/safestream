@@ -40,11 +40,6 @@ window.addEventListener("load", function(evt) {
 													 error =>
 														console.error(error)
 													))
-//	    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
-//	    .then(audioBuffer => {
-//	      playButton.disabled = false;
-//	      yodelBuffer = audioBuffer;
-//	    });
 
 	  function load(resURL) {
 	  window.fetch(resURL)
@@ -54,6 +49,13 @@ window.addEventListener("load", function(evt) {
 		  resBuffer.set(resURL, audioBuffer)
 	    });
       }
+
+	  function play(audioBuffer) {
+	    const source = context.createBufferSource();
+	    source.buffer = audioBuffer;
+	    source.connect(context.destination);
+	    source.start();
+	  }
 
       load("air00.mp3")
       load("air01.mp3")
@@ -173,12 +175,6 @@ window.addEventListener("load", function(evt) {
 	        return false;
 		};
 
-	  function play(audioBuffer) {
-	    const source = context.createBufferSource();
-	    source.buffer = audioBuffer;
-	    source.connect(context.destination);
-	    source.start();
-	  }
 	}());
 
     var enterfn = function(evt) {
