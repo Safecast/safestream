@@ -198,7 +198,7 @@ window.addEventListener("load", function(evt) {
 			var line = evt.data
             print(line);
 			var firstWord = line.substr(0, line.indexOf(" "));
-			play(resBuffer.get(firstword.concat(".mp3")));
+			play(resBuffer.get(firstWord.concat(".mp3")));
 //			document.getElementById(firstWord).click()
         }
         ws.onerror = function(evt) {
