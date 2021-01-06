@@ -49,7 +49,7 @@ window.addEventListener("load", function(evt) {
 													))
 
 	  function load(resURL) {
-	  window.fetch(URL)
+	  window.fetch(resURL)
 	    .then(response => response.arrayBuffer())
 		.then(arrayBuffer => context.decodeAudioData(arrayBuffer,
 													 audioBuffer => {
