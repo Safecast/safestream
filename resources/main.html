@@ -20,15 +20,15 @@ window.addEventListener("load", function(evt) {
 		d.scrollIntoView()
     };
 
+	var yodelBuffer;
+	var resBuffer = new Map();
+
 	(function () {
 	  'use strict';
 
 	  const URL = "yodel.mp3"
 
 	  var context = new (window.AudioContext || window.webkitAudioContext)();
-
-	  let yodelBuffer;
-	  let resBuffer = new Map();
 
 	  window.fetch(URL)
 	    .then(response => response.arrayBuffer())
