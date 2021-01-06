@@ -26,9 +26,7 @@ window.addEventListener("load", function(evt) {
 	  const URL = "yodel.mp3"
 
 //	  const context = new AudioContext();
-      var AudioContext = window.AudioContext // Default
-               || (window as any).webkitAudioContext;// Safari and old versions of Chrome
-	  var context = new AudioContext();
+	  var context = new (window.AudioContext || window.webkitAudioContext
 
 	  let yodelBuffer;
 	  let resBuffer = new Map();
