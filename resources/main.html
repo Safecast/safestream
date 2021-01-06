@@ -23,6 +23,13 @@ window.addEventListener("load", function(evt) {
 	var yodelBuffer;
 	var resBuffer = new Map();
 
+	  function play(audioBuffer) {
+	    const source = context.createBufferSource();
+	    source.buffer = audioBuffer;
+	    source.connect(context.destination);
+	    source.start();
+	  }
+
 	(function () {
 	  'use strict';
 
@@ -49,13 +56,6 @@ window.addEventListener("load", function(evt) {
 		  resBuffer.set(resURL, audioBuffer)
 	    });
       }
-
-	  function play(audioBuffer) {
-	    const source = context.createBufferSource();
-	    source.buffer = audioBuffer;
-	    source.connect(context.destination);
-	    source.start();
-	  }
 
       load("air00.mp3")
       load("air01.mp3")
