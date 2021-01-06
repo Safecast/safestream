@@ -25,7 +25,6 @@ window.addEventListener("load", function(evt) {
 
 	  const URL = "yodel.mp3"
 
-//	  const context = new AudioContext();
 	  var context = new (window.AudioContext || window.webkitAudioContext)();
 
 	  let yodelBuffer;
@@ -33,11 +32,19 @@ window.addEventListener("load", function(evt) {
 
 	  window.fetch(URL)
 	    .then(response => response.arrayBuffer())
-	    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
-	    .then(audioBuffer => {
-	      playButton.disabled = false;
-	      yodelBuffer = audioBuffer;
-	    });
+		.then(arrayBuffer => context.decodeAudioData(arrayBuffer,
+													 audiobuffer => {
+												      playButton.disabled = false;
+												      yodelBuffer = audioBuffer;
+													 },
+													 error =>
+														console.error(error)
+													))
+//	    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+//	    .then(audioBuffer => {
+//	      playButton.disabled = false;
+//	      yodelBuffer = audioBuffer;
+//	    });
 
 	  function load(resURL) {
 	  window.fetch(resURL)
