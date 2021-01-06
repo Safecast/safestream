@@ -33,7 +33,11 @@ func streamInit() (err error) {
 
 // Handle http requests to the root url
 func streamLaunch(rsp http.ResponseWriter, req *http.Request) {
-	streamTemplate.Execute(rsp, "ws://"+req.Host+httpTopicStream1+req.URL.String())
+	scheme := "ws:"
+	if req.TLS != nil {
+		scheme = "wss:"
+	}
+	streamTemplate.Execute(rsp, scheme+"//"+req.Host+httpTopicStream1+req.URL.String())
 }
 
 // Handle ws template
