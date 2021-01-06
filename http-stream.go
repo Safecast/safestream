@@ -37,7 +37,9 @@ func streamLaunch(rsp http.ResponseWriter, req *http.Request) {
 	if req.TLS != nil {
 		scheme = "wss:"
 	}
-	streamTemplate.Execute(rsp, scheme+"//"+req.Host+httpTopicStream1+req.URL.String())
+	url := scheme + "//" + req.Host + httpTopicStream1 + req.URL.String()
+	fmt.Printf("upgrading: '%s'\n")
+	streamTemplate.Execute(rsp, url)
 }
 
 // Handle ws template
