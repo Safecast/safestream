@@ -38,9 +38,6 @@ go version
 ## Install emacs (or the editor of your choice)
 sudo apt-get install emacs
 
-### OZZIE ## Add these to the end of ~/.profile with NANO editor
-### OZZIE export PATH=$PATH:/usr/local/go/bin
-
 ## Fetch our app package
 cd ~
 git clone https://github.com/safecast/safestream
