@@ -49,12 +49,15 @@ window.addEventListener("load", function(evt) {
 													))
 
 	  function load(resURL) {
-	  window.fetch(resURL)
+	  window.fetch(URL)
 	    .then(response => response.arrayBuffer())
-	    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
-	    .then(audioBuffer => {
-		  resBuffer.set(resURL, audioBuffer)
-	    });
+		.then(arrayBuffer => context.decodeAudioData(arrayBuffer,
+													 audioBuffer => {
+													  resBuffer.set(resURL, audioBuffer)
+													 },
+													 error =>
+														console.error(error)
+													))
       }
 
       load("air00.mp3")
