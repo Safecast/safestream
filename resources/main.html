@@ -17,7 +17,8 @@
 				 var d = document.createElement("div");
 				 d.textContent = message;
 				 output.appendChild(d);
-				 d.scrollIntoView()
+				 d.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+//				 d.scrollIntoView()
 			 };
 
 			 var yodelBuffer;
