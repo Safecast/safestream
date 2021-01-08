@@ -69,5 +69,6 @@ func uploadRead(collection string, filename string) (contents []byte, err error)
 	directory := homedir + filePathCollections + collection
 	file := directory + "/" + filename
 	contents, err = ioutil.ReadFile(file)
+	fmt.Printf("OZZIE: file:%s contents:%d err:%s\n", file, len(contents), err)
 	return
 }

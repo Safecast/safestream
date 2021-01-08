@@ -31,7 +31,6 @@ func httpMainHandler(rsp http.ResponseWriter, req *http.Request) {
 		target = strings.TrimSuffix(target, "/")
 	}
 
-	fmt.Printf("OZZIE: target:'%s'\n", target)
 	// Process the stream
 	if method == "GET" && target == "" {
 		streamLaunch(rsp, req)
@@ -43,8 +42,12 @@ func httpMainHandler(rsp http.ResponseWriter, req *http.Request) {
 		s := strings.Split(target, "/")
 		collection := s[0]
 		filename := s[1]
-		contents, _ := uploadRead(collection, filename)
-		rsp.Write(contents)
+		contents, err := uploadRead(collection, filename)
+		if err != nil {
+			fmt.Printf("uploadRead: %s\n", err)
+		} else {
+			rsp.Write(contents)
+		}
 		return
 	}
 
