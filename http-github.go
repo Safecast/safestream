@@ -25,7 +25,7 @@ func httpGithubHandler(rw http.ResponseWriter, req *http.Request) {
 	var p PushPayload
 	err = json.Unmarshal(body, &p)
 	if err != nil {
-		fmt.Printf("Github webhook: error unmarshaling body: %s", err)
+		fmt.Printf("Github webhook: error unmarshaling body: %s\n%s", err, body)
 		return
 	}
 
