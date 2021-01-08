@@ -36,6 +36,16 @@ func httpMainHandler(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// If the resource has a slash in it, it's in a collection
+	if strings.Contains(target, "/") {
+		s := strings.Split(target, "/")
+		collection := s[0]
+		filename := s[1]
+		contents, _ := uploadRead(collection, filename)
+		rsp.Write(contents)
+		return
+	}
+
 	// Attempt to load the resource
 	contents, _ := resourceRead(target)
 	rsp.Write(contents)

@@ -46,19 +46,28 @@ func httpUploadHandler(rsp http.ResponseWriter, req *http.Request) {
 	// Make sure that the collection directory is created
 	homedir := os.Getenv("HOME")
 	directory := homedir + filePathCollections + collection
-	fmt.Printf("%s\n", directory)
+	file := directory + "/" + filename
 	os.MkdirAll(directory, 0777)
 
 	// Write the file
-	err = ioutil.WriteFile(directory+"/"+filename, contents, 0644)
+	err = ioutil.WriteFile(file, contents, 0644)
 	if err != nil {
-		fmt.Printf("%s\n", err)
 		io.WriteString(rsp, fmt.Sprintf("can't write file: %s\n", err))
 		return
 	}
-	fmt.Printf("done\n")
 
 	// Done
 	return
 
+}
+
+// Read from an upload
+
+// Get a resource's contents
+func uploadRead(collection string, filename string) (contents []byte, err error) {
+	homedir := os.Getenv("HOME")
+	directory := homedir + filePathCollections + collection
+	file := directory + "/" + filename
+	contents, err = ioutil.ReadFile(file)
+	return
 }
