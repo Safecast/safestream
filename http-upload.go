@@ -51,14 +51,17 @@ func httpUploadHandler(rsp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	directory := usr.HomeDir + filePathCollections + collection
+	fmt.Printf("%s\n", directory)
 	os.MkdirAll(directory, 0777)
 
 	// Write the file
 	err = ioutil.WriteFile(directory+"/"+filename, contents, 0644)
 	if err != nil {
+		fmt.Printf("%s\n", err)
 		io.WriteString(rsp, fmt.Sprintf("can't write file: %s\n", err))
 		return
 	}
+	fmt.Printf("done\n")
 
 	// Done
 	return
