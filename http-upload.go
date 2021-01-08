@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/user"
 )
 
 // Handle http requests to the root url
@@ -45,12 +44,8 @@ func httpUploadHandler(rsp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Make sure that the collection directory is created
-	usr, err := user.Current()
-	if err != nil {
-		io.WriteString(rsp, fmt.Sprintf("can't get home directory: %s\n", err))
-		return
-	}
-	directory := usr.HomeDir + filePathCollections + collection
+	homedir := os.Getenv("HOME")
+	directory := homedir + filePathCollections + collection
 	fmt.Printf("%s\n", directory)
 	os.MkdirAll(directory, 0777)
 
