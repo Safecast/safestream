@@ -47,7 +47,7 @@
 					   ))
 
 				 function load(resURL, resID) {
-					 window.fetch(resURL, resID)
+					 window.fetch(resURL)
 						   .then(response => response.arrayBuffer())
 						   .then(arrayBuffer => context.decodeAudioData(arrayBuffer,
 																		audioBuffer => {
