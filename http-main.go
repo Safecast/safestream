@@ -5,6 +5,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -30,7 +31,8 @@ func httpMainHandler(rsp http.ResponseWriter, req *http.Request) {
 		target = strings.TrimSuffix(target, "/")
 	}
 
-	// Process
+	fmt.Printf("OZZIE: target:'%s'\n")
+	// Process the stream
 	if method == "GET" && target == "" {
 		streamLaunch(rsp, req)
 		return
