@@ -21,6 +21,7 @@ func httpInboundHandler() {
 	http.HandleFunc(httpTopicStream1, httpStreamHandler)
 	http.HandleFunc(httpTopicStream2, httpStreamHandler)
 	http.HandleFunc(httpTopicGithub, httpGithubHandler)
+	http.HandleFunc(httpTopicUpload, httpUploadHandler)
 	http.HandleFunc(httpTopicPing, httpPingHandler)
 	http.HandleFunc(httpTopicMain0, httpMainHandler)
 	http.HandleFunc(httpTopicMain1, httpMainHandler)

@@ -34,8 +34,14 @@ const httpTopicStream1 string = "/stream"
 // httpTopicStream2 (here for golint)
 const httpTopicStream2 string = "/stream/"
 
+// httpTopicUpload (here for golint)
+const httpTopicUpload string = "/upload"
+
 // filePathResources (here for golint)
 const filePathResources string = "/resources/"
+
+// filePathCollections relative to Home directory (here for golint)
+const filePathCollections string = "/collections/"
 
 // Our server address
 var thisServerAddressIPv4 = ""
