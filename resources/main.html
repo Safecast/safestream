@@ -46,12 +46,12 @@
 																		console.error(error)
 					   ))
 
-				 function load(resURL) {
-					 window.fetch(resURL)
+				 function load(resURL, resID) {
+					 window.fetch(resURL, resID)
 						   .then(response => response.arrayBuffer())
 						   .then(arrayBuffer => context.decodeAudioData(arrayBuffer,
 																		audioBuffer => {
-																			resBuffer.set(resURL, audioBuffer)
+																			resBuffer.set(resID, audioBuffer)
 																		},
 																		error =>
 																			console.error(error)
@@ -66,28 +66,28 @@
 				 if (c != null) {
 					 prefix = c.concat("/");
 				 }
-				 load(prefix.concat("air00.mp3"));
-				 load(prefix.concat("air01.mp3"));
-				 load(prefix.concat("air02.mp3"));
-				 load(prefix.concat("air03.mp3"));
-				 load(prefix.concat("air04.mp3"));
-				 load(prefix.concat("air05.mp3"));
-				 load(prefix.concat("air06.mp3"));
-				 load(prefix.concat("air07.mp3"));
-				 load(prefix.concat("air08.mp3"));
-				 load(prefix.concat("air09.mp3"));
-				 load(prefix.concat("air10.mp3"));
-				 load(prefix.concat("rad00.mp3"));
-				 load(prefix.concat("rad01.mp3"));
-				 load(prefix.concat("rad02.mp3"));
-				 load(prefix.concat("rad03.mp3"));
-				 load(prefix.concat("rad04.mp3"));
-				 load(prefix.concat("rad05.mp3"));
-				 load(prefix.concat("rad06.mp3"));
-				 load(prefix.concat("rad07.mp3"));
-				 load(prefix.concat("rad08.mp3"));
-				 load(prefix.concat("rad09.mp3"));
-				 load(prefix.concat("rad10.mp3"));
+				 load(prefix.concat("air00.mp3", "air00"));
+				 load(prefix.concat("air01.mp3", "air01"));
+				 load(prefix.concat("air02.mp3", "air02"));
+				 load(prefix.concat("air03.mp3", "air03"));
+				 load(prefix.concat("air04.mp3", "air04"));
+				 load(prefix.concat("air05.mp3", "air05"));
+				 load(prefix.concat("air06.mp3", "air06"));
+				 load(prefix.concat("air07.mp3", "air07"));
+				 load(prefix.concat("air08.mp3", "air08"));
+				 load(prefix.concat("air09.mp3", "air09"));
+				 load(prefix.concat("air10.mp3", "air10"));
+				 load(prefix.concat("rad00.mp3", "rad00"));
+				 load(prefix.concat("rad01.mp3", "rad01"));
+				 load(prefix.concat("rad02.mp3", "rad02"));
+				 load(prefix.concat("rad03.mp3", "rad03"));
+				 load(prefix.concat("rad04.mp3", "rad04"));
+				 load(prefix.concat("rad05.mp3", "rad05"));
+				 load(prefix.concat("rad06.mp3", "rad06"));
+				 load(prefix.concat("rad07.mp3", "rad07"));
+				 load(prefix.concat("rad08.mp3", "rad08"));
+				 load(prefix.concat("rad09.mp3", "rad09"));
+				 load(prefix.concat("rad10.mp3", "rad10"));
 
 				 playButton.onclick = function(evt) {
 					 playButton.style.display = "none";
@@ -114,7 +114,7 @@
 					 var line = evt.data
 					 print(line);
 					 var firstWord = line.substr(0, line.indexOf(" "));
-					 play(resBuffer.get(firstWord.concat(".mp3")));
+					 play(resBuffer.get(firstWord));
 					 //			document.getElementById(firstWord).click()
 				 }
 				 ws.onerror = function(evt) {
