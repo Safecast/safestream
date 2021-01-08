@@ -35,9 +35,7 @@
 			 (function () {
 				 'use strict';
 
-				 const URL = "yodel.mp3"
-
-				 window.fetch(URL)
+				 window.fetch("yodel.mp3")
 					   .then(response => response.arrayBuffer())
 					   .then(arrayBuffer => context.decodeAudioData(arrayBuffer,
 																	audioBuffer => {
