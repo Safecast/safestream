@@ -62,7 +62,7 @@
 				var url = new URL(url_string);
 				var c = url.searchParams.get("collection");
 				console.log(c);
-				 if (c != "") {
+				 if (c.length != 0) {
 					 c = c.concat("/");
 				 }
 				 load(c.concat("air00.mp3"));
