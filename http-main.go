@@ -31,7 +31,7 @@ func httpMainHandler(rsp http.ResponseWriter, req *http.Request) {
 		target = strings.TrimSuffix(target, "/")
 	}
 
-	fmt.Printf("OZZIE: target:'%s'\n")
+	fmt.Printf("OZZIE: target:'%s'\n", target)
 	// Process the stream
 	if method == "GET" && target == "" {
 		streamLaunch(rsp, req)
