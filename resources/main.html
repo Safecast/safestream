@@ -58,35 +58,36 @@
 						   ))
 				 }
 
-				var url_string = window.location.href;
-				var url = new URL(url_string);
-				var c = url.searchParams.get("collection");
-				console.log(c);
-				 if (c.length != 0) {
-					 c = c.concat("/");
+				 var url_string = window.location.href;
+				 var url = new URL(url_string);
+				 var c = url.searchParams.get("collection");
+				 console.log(c);
+				 var prefix = ""
+				 if (c != null) {
+					 prefix = s.concat("/");
 				 }
-				 load(c.concat("air00.mp3"));
-				 load(c.concat("air01.mp3"));
-				 load(c.concat("air02.mp3"));
-				 load(c.concat("air03.mp3"));
-				 load(c.concat("air04.mp3"));
-				 load(c.concat("air05.mp3"));
-				 load(c.concat("air06.mp3"));
-				 load(c.concat("air07.mp3"));
-				 load(c.concat("air08.mp3"));
-				 load(c.concat("air09.mp3"));
-				 load(c.concat("air10.mp3"));
-				 load(c.concat("rad00.mp3"));
-				 load(c.concat("rad01.mp3"));
-				 load(c.concat("rad02.mp3"));
-				 load(c.concat("rad03.mp3"));
-				 load(c.concat("rad04.mp3"));
-				 load(c.concat("rad05.mp3"));
-				 load(c.concat("rad06.mp3"));
-				 load(c.concat("rad07.mp3"));
-				 load(c.concat("rad08.mp3"));
-				 load(c.concat("rad09.mp3"));
-				 load(c.concat("rad10.mp3"));
+				 load(prefix.concat("air00.mp3"));
+				 load(prefix.concat("air01.mp3"));
+				 load(prefix.concat("air02.mp3"));
+				 load(prefix.concat("air03.mp3"));
+				 load(prefix.concat("air04.mp3"));
+				 load(prefix.concat("air05.mp3"));
+				 load(prefix.concat("air06.mp3"));
+				 load(prefix.concat("air07.mp3"));
+				 load(prefix.concat("air08.mp3"));
+				 load(prefix.concat("air09.mp3"));
+				 load(prefix.concat("air10.mp3"));
+				 load(prefix.concat("rad00.mp3"));
+				 load(prefix.concat("rad01.mp3"));
+				 load(prefix.concat("rad02.mp3"));
+				 load(prefix.concat("rad03.mp3"));
+				 load(prefix.concat("rad04.mp3"));
+				 load(prefix.concat("rad05.mp3"));
+				 load(prefix.concat("rad06.mp3"));
+				 load(prefix.concat("rad07.mp3"));
+				 load(prefix.concat("rad08.mp3"));
+				 load(prefix.concat("rad09.mp3"));
+				 load(prefix.concat("rad10.mp3"));
 
 				 playButton.onclick = function(evt) {
 					 playButton.style.display = "none";
