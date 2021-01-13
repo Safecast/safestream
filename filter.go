@@ -65,56 +65,56 @@ func filterClassify(sd TTDefs.SafecastData, ipinfo IPInfoData) (events []filterE
 	// Classify radiation
 	if sd.Lnd != nil {
 		if sd.Lnd.U7318 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassRadiation, "U7318", "cpm", 20.0, 80.0, *sd.Lnd.U7318))
+			events = append(events, fev(sd, ipinfo, filterClassRadiation, "U7318", "cpm", 20.0, 50.0, *sd.Lnd.U7318))
 		}
 		if sd.Lnd.C7318 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassRadiation, "C7318", "cpm", 20.0, 80.0, *sd.Lnd.C7318))
+			events = append(events, fev(sd, ipinfo, filterClassRadiation, "C7318", "cpm", 20.0, 50.0, *sd.Lnd.C7318))
 		}
 		if sd.Lnd.EC7128 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassRadiation, "EC7128", "cpm", 5.0, 30.0, *sd.Lnd.EC7128))
+			events = append(events, fev(sd, ipinfo, filterClassRadiation, "EC7128", "cpm", 5.0, 20.0, *sd.Lnd.EC7128))
 		}
 		if sd.Lnd.U712 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassRadiation, "U712", "cpm", 20.0, 80.0, *sd.Lnd.U712))
+			events = append(events, fev(sd, ipinfo, filterClassRadiation, "U712", "cpm", 20.0, 50.0, *sd.Lnd.U712))
 		}
 		if sd.Lnd.W78017 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassRadiation, "W78017", "cpm", 20.0, 80.0, *sd.Lnd.W78017))
+			events = append(events, fev(sd, ipinfo, filterClassRadiation, "W78017", "cpm", 10.0, 50.0, *sd.Lnd.W78017))
 		}
 	}
 
 	// Classify Air PMS
 	if sd.Pms != nil {
 		if sd.Pms.Pm02_5 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM2.5", "ug", 0.0, 90.0, *sd.Pms.Pm02_5))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM2.5", "ug", 0.0, 10.0, *sd.Pms.Pm02_5))
 		}
 		if sd.Pms.Pm10_0 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM10.0", "ug", 0.0, 90.0, *sd.Pms.Pm10_0))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM10.0", "ug", 0.0, 10.0, *sd.Pms.Pm10_0))
 		}
 		if sd.Pms.Pm01_0 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM1.0", "ug", 0.0, 90.0, *sd.Pms.Pm01_0))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM1.0", "ug", 0.0, 10.0, *sd.Pms.Pm01_0))
 		}
 	}
 	if sd.Pms2 != nil {
 		if sd.Pms2.Pm02_5 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM2.5", "ug", 0.0, 90.0, *sd.Pms2.Pm02_5))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM2.5", "ug", 0.0, 10.0, *sd.Pms2.Pm02_5))
 		}
 		if sd.Pms2.Pm10_0 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM10.0", "ug", 0.0, 90.0, *sd.Pms2.Pm10_0))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM10.0", "ug", 0.0, 10.0, *sd.Pms2.Pm10_0))
 		}
 		if sd.Pms2.Pm01_0 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM1.0", "ug", 0.0, 90.0, *sd.Pms2.Pm01_0))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "PMS PM1.0", "ug", 0.0, 10.0, *sd.Pms2.Pm01_0))
 		}
 	}
 
 	// Classify Air PMS
 	if sd.Opc != nil {
 		if sd.Opc.Pm02_5 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "OPC PM2.5", "ug", 0.0, 90.0, *sd.Opc.Pm02_5))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "OPC PM2.5", "ug", 0.0, 10.0, *sd.Opc.Pm02_5))
 		}
 		if sd.Opc.Pm10_0 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "OPC PM10.0", "ug", 0.0, 90.0, *sd.Opc.Pm10_0))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "OPC PM10.0", "ug", 0.0, 10.0, *sd.Opc.Pm10_0))
 		}
 		if sd.Opc.Pm01_0 != nil {
-			events = append(events, fev(sd, ipinfo, filterClassAir, "OPC PM1.0", "ug", 0.0, 90.0, *sd.Opc.Pm01_0))
+			events = append(events, fev(sd, ipinfo, filterClassAir, "OPC PM1.0", "ug", 0.0, 10.0, *sd.Opc.Pm01_0))
 		}
 	}
 
