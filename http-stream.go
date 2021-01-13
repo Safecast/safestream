@@ -80,7 +80,7 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 	for !inboundExited {
 
 		// Get more data from the watcher
-		data, ipinfo, err := watcherGet(watcherID, 10*time.Second)
+		data, ipinfo, err := watcherGet(watcherID, 8*time.Second)
 		if err != nil {
 			break
 		}
