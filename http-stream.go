@@ -79,11 +79,8 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 	// Data watching loop
 	for !inboundExited {
 
-		// Get more data from the watcher, using a timeout computed by trial and
-		// error as a reasonable amount of time to catch an error on the Write
-		// when the client has gone away.  Longer than that, sometimes the response
-		// time in picking up an error becomes quite unpredictable and long.
-		data, ipinfo, err := watcherGet(watcherID, 16*time.Second)
+		// Get more data from the watcher
+		data, ipinfo, err := watcherGet(watcherID, 10*time.Second)
 		if err != nil {
 			break
 		}
