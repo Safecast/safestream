@@ -104,12 +104,11 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 				for _, e := range events {
 					maplink := fmt.Sprintf("https://www.google.com/maps/search/?api=1&query=%f,%f", e.lat, e.lon)
 					inflink := fmt.Sprintf("https://tt.safecast.org/id/%s", e.device)
-					s := fmt.Sprintf("%s%02d %0.02f%% %s %.0fkm %s %s\n",
+					s := fmt.Sprintf("%s%02d %0.02f%% %s%s%s %s%.0f%s\n",
 						e.class, int(e.percent*10),
-						e.percent*100, e.summary,
-						e.distance/1000,
-						"<a href=\""+maplink+"\" target=\"_blank\">map</a>",
-						"<a href=\""+inflink+"\" target=\"_blank\">data</a>")
+						e.percent*100,
+						"<a href=\""+inflink+"\" target=\"_blank\">", e.summary, "</a>",
+						"<a href=\""+maplink+"\" target=\"_blank\">", e.distance/1000, "km</a>")
 					err = c.WriteMessage(websocket.TextMessage, []byte(s))
 					if err != nil {
 						break

@@ -51,9 +51,10 @@ func fev(sd TTDefs.SafecastData, ipinfo IPInfoData, class string, summary string
 
 	// Generate a summary
 	e.device = sd.DeviceUID
-	e.summary = fmt.Sprintf("%s", sd.DeviceUID)
-	if sd.DeviceSN != "" {
-		e.summary += " (" + sd.DeviceSN + ")"
+	if sd.DeviceSN == "" {
+		e.summary = "(" + sd.DeviceUID + ")"
+	} else {
+		e.summary = "(" + sd.DeviceSN + ")"
 	}
 	e.summary += fmt.Sprintf(" %s %.1f%s", summary, f, unit)
 	if f > fmax {
