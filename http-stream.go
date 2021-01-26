@@ -108,8 +108,8 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 						e.distance/1000,
 						//						e.city,
 						//						e.country)
-						"<a href=\"http://safecast.org\">*</a>",
-						"<a href=\"http://google.com\">*</a>")
+						"<a href=\"http://safecast.org\" target=\"_blank\">*</a>",
+						"<a href=\"http://google.com\" target=\"_blank\">*</a>")
 					err = c.WriteMessage(websocket.TextMessage, []byte(s))
 					if err != nil {
 						break
