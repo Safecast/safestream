@@ -10,6 +10,7 @@
 			 var input = document.getElementById("input");
 			 var playButton = document.getElementById("play");
 			 var header = document.getElementById("header");
+			 var spacer = document.getElementById("spacer");
 
 			 var ws;
 
@@ -19,7 +20,7 @@
 				 d.innerHTML = '<p style="line-height:50%">' + message + '</p>';
 				 d = d.firstChild;
 				 output.appendChild(d);
-				 d.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+				 spacer.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
 			 };
 
 			 var yodelBuffer;
@@ -164,7 +165,7 @@
 		</table>
 		<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
 		<div id="output"></div>
-		<div id="spacer"><p> </p></div>
+		<div id="spacer"><p>*</p></div>
 		<div id="footer">
 			<p><p>
 				<form>
