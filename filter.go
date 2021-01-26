@@ -26,6 +26,9 @@ type filterEvent struct {
 	country  string
 	city     string
 	distance float64
+	lat      float64
+	lon      float64
+	device   string
 }
 
 func fev(sd TTDefs.SafecastData, ipinfo IPInfoData, class string, summary string, unit string, fmin float64, fmax float64, f float64) (e filterEvent) {
@@ -41,10 +44,13 @@ func fev(sd TTDefs.SafecastData, ipinfo IPInfoData, class string, summary string
 		if sd.Loc.LocCountry != nil {
 			e.country = *sd.Loc.LocCountry
 		}
+		e.lat = *sd.Loc.Lat
+		e.lon = *sd.Loc.Lon
 		e.distance = distance(ipinfo.Latitude, ipinfo.Longitude, *sd.Loc.Lat, *sd.Loc.Lon)
 	}
 
 	// Generate a summary
+	e.device = sd.DeviceUID
 	e.summary = fmt.Sprintf("%s", sd.DeviceUID)
 	if sd.DeviceSN != "" {
 		e.summary += " (" + sd.DeviceSN + ")"
