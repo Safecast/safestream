@@ -15,8 +15,9 @@
 
 			 var print = function(message) {
 				 var d = document.createElement("div");
-				 d.textContent = message;
-				 output.appendChild(d);
+//				 d.textContent = message;
+				 //				 output.appendChild(d);
+				 d.insertAdjacentHTML('beforeend', message)
 				 d.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
 			 };
 
