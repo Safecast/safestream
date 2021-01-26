@@ -105,7 +105,11 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 					s := fmt.Sprintf("%s%02d %0.02f%% %s %.0fkm %s %s\n",
 						e.class, int(e.percent*10),
 						e.percent*100, e.summary,
-						e.distance/1000, e.city, e.country)
+						e.distance/1000,
+						//						e.city,
+						//						e.country)
+						"<a href=\"http://safecast.org\">*</a>",
+						"<a href=\"http://google.com\">*</a>")
 					err = c.WriteMessage(websocket.TextMessage, []byte(s))
 					if err != nil {
 						break
