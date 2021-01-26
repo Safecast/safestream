@@ -22,6 +22,7 @@ func filterMatches(data TTDefs.SafecastData, target string, args map[string]stri
 type filterEvent struct {
 	class    string
 	percent  float64
+	name     string
 	summary  string
 	country  string
 	city     string
@@ -52,11 +53,11 @@ func fev(sd TTDefs.SafecastData, ipinfo IPInfoData, class string, summary string
 	// Generate a summary
 	e.device = sd.DeviceUID
 	if sd.DeviceSN == "" {
-		e.summary = "(" + sd.DeviceUID + ")"
+		e.name = sd.DeviceUID
 	} else {
-		e.summary = "(" + sd.DeviceSN + ")"
+		e.name = sd.DeviceSN
 	}
-	e.summary += fmt.Sprintf(" %s %.1f%s", summary, f, unit)
+	e.summary = fmt.Sprintf("%s %.1f%s", summary, f, unit)
 	if f > fmax {
 		e.percent = 1.0
 	} else if f < fmin {
