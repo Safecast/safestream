@@ -104,7 +104,7 @@ func httpStreamHandler(rsp http.ResponseWriter, req *http.Request) {
 				for _, e := range events {
 					maplink := fmt.Sprintf("https://www.google.com/maps/search/?api=1&query=%f,%f", e.lat, e.lon)
 					inflink := fmt.Sprintf("https://tt.safecast.org/id/%s", e.device)
-					s := fmt.Sprintf("%s%02d %0.02f%% (%s%s%s) %s %s%.0f%s\n",
+					s := fmt.Sprintf("%s%02d %0.02f%% %s%s%s %s %s%.0f%s\n",
 						e.class, int(e.percent*10),
 						e.percent*100,
 						"<a href=\""+inflink+"\" target=\"_blank\">", e.name, "</a>",
