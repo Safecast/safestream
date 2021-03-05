@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/Safecast/TTDefs"
+	"github.com/Safecast/ttdefs"
 )
 
 // Filter classes
 const filterClassRadiation = "rad"
 const filterClassAir = "air"
 
-func filterMatches(data TTDefs.SafecastData, target string, args map[string]string) bool {
+func filterMatches(data ttdefs.SafecastData, target string, args map[string]string) bool {
 	return true
 }
 
@@ -32,7 +32,7 @@ type filterEvent struct {
 	device   string
 }
 
-func fev(sd TTDefs.SafecastData, ipinfo IPInfoData, class string, summary string, unit string, fmin float64, fmax float64, f float64) (e filterEvent) {
+func fev(sd ttdefs.SafecastData, ipinfo IPInfoData, class string, summary string, unit string, fmin float64, fmax float64, f float64) (e filterEvent) {
 
 	// Basic info
 	e.class = class
@@ -68,7 +68,7 @@ func fev(sd TTDefs.SafecastData, ipinfo IPInfoData, class string, summary string
 	return
 }
 
-func filterClassify(sd TTDefs.SafecastData, ipinfo IPInfoData) (events []filterEvent) {
+func filterClassify(sd ttdefs.SafecastData, ipinfo IPInfoData) (events []filterEvent) {
 
 	// Classify radiation
 	if sd.Lnd != nil {

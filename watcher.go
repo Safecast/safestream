@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Safecast/TTDefs"
+	"github.com/Safecast/ttdefs"
 	"github.com/google/uuid"
 )
 
@@ -23,7 +23,7 @@ type activeWatcher struct {
 	target    string
 	args      map[string]string
 	event     *Event
-	buf       []TTDefs.SafecastData
+	buf       []ttdefs.SafecastData
 }
 
 var watchers = []activeWatcher{}
@@ -95,7 +95,7 @@ func watcherDelete(watcherID string) {
 }
 
 // Get data from a watcher
-func watcherGet(watcherID string, timeout time.Duration) (data []TTDefs.SafecastData, ipinfo IPInfoData, err error) {
+func watcherGet(watcherID string, timeout time.Duration) (data []ttdefs.SafecastData, ipinfo IPInfoData, err error) {
 	var watcher activeWatcher
 
 	// Find the watcher
@@ -122,7 +122,7 @@ func watcherGet(watcherID string, timeout time.Duration) (data []TTDefs.Safecast
 		if watchers[i].watcherID == watcherID {
 			data = watchers[i].buf
 			ipinfo = watchers[i].ipinfo
-			watchers[i].buf = []TTDefs.SafecastData{}
+			watchers[i].buf = []ttdefs.SafecastData{}
 			break
 		}
 	}
@@ -133,7 +133,7 @@ func watcherGet(watcherID string, timeout time.Duration) (data []TTDefs.Safecast
 }
 
 // Append data from a watcher
-func watcherPut(data TTDefs.SafecastData) {
+func watcherPut(data ttdefs.SafecastData) {
 
 	// Scan all watchers
 	watcherLock.Lock()

@@ -12,17 +12,17 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Safecast/TTDefs"
+	"github.com/Safecast/ttdefs"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
-var eventQ chan TTDefs.SafecastData
+var eventQ chan ttdefs.SafecastData
 
 // mqttInit initializes the listener
 func mqttInit() {
 
 	// Create the queue
-	eventQ = make(chan TTDefs.SafecastData, 10000)
+	eventQ = make(chan ttdefs.SafecastData, 10000)
 	go mqttEventQHandler(eventQ)
 
 	// Get connect parameters
@@ -53,7 +53,7 @@ func mqttInit() {
 // mqttMessageReceived handles received messages
 func mqttMessageReceived(client MQTT.Client, message MQTT.Message) {
 
-	var e TTDefs.SafecastData
+	var e ttdefs.SafecastData
 	err := json.Unmarshal(message.Payload(), &e)
 	if err != nil {
 		fmt.Printf("mqtt message error: %s\n", err)
@@ -79,7 +79,7 @@ func mqttConnectHandler(c MQTT.Client) {
 }
 
 // Event queue handler
-func mqttEventQHandler(ch <-chan TTDefs.SafecastData) {
+func mqttEventQHandler(ch <-chan ttdefs.SafecastData) {
 
 	for {
 
