@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>SAFACEST DATA TERMINAL</title>
+	<title>SAFECAST DATA TERMINAL</title>
 	<meta charset="utf-8">
 	<style type="text/css">
 		body {
@@ -9,7 +9,10 @@
 		}
 
 		#mapContainer {
-			position: relative;
+			z-index: 0;
+			position: absolute;
+			top: 0;
+			left: 0;
 		}
 
 		#mapImg, #mapCvs {
@@ -29,33 +32,61 @@
 		#txtCvs {
 			z-index: 1024;
 		}
+
+		#header, #output, #footer, #spacer {
+			display: none;
+			position: absolute;
+			top: -100px;
+		}
+
+		#navigation {
+			position: absolute;
+			top: 0;
+			left: 45px;
+			background-color: rgba(0, 32, 0, 0.8);
+			color: white;
+			z-index: 2048;
+		}
 	</style>
 </head>
 <body>
 	<noscript>This page requires Javascript to function</noscript>
+	<div id="navigation">
+		<button id="play_pause">PLAY/PAUSE</button>
+		|
+		<button id="explainer_credits">ABOUT/CREDITS</button>
+		<br>
+		Links: 
+		<a href="https://safecast.org/donate">DONATE TO SAFECAST</a>
+		|
+		<a href="https://safecast.org/">SAFECAST</a>
+		|
+		<a href="https://blues.io">BLUES WIRELESS</a>
+		<br>
+		Soundpacks:
+		<a href="/?collection=NIN">NIИ:GHOSTS</a>
+		|
+		<a href="/?collection=sean">MICHELSONNE</a>
+		|
+		<a href="/?collection=buchla">BUCHLA EASEL</a>
+		|
+		<a href="/?collection=polivox">ПОЛИВОКС</a>
+	</div>
 	<div id="mapContainer">
 		<img src="map.png" id="mapImg" width="2048" height="1024">
 		<canvas id="mapCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas>
 		<canvas id="txtCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas>
 	</div>
-
-	<table width=100% height=100%>
-		<tr>
-			<td>
-				<img src="safecast-small.png"/>
-			</td>
-		</tr>
-	</table>
 	<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
 	<div id="output"></div>
 	<div id="footer">
 		<p><p>
 			<form>
-				<!--
+				
 					 <p><input id="input" type="text" value="">
 					 <button id="send">request</button>
 					 <p>
-				   -->
+				   
 				<button id="play" disabled>Listen to Event Stream</button>
 			</form>
 	</div>

@@ -4,6 +4,10 @@
 /*
 	I will leave this section mostly untouched by now, so it won't break now.	
 */
+var yodelBuffer;
+var resBuffer = new Map();
+var context = new (window.AudioContext || window.webkitAudioContext)();
+
 window.addEventListener("load", function(evt) {
 
 	var output = document.getElementById("output");
@@ -23,10 +27,24 @@ window.addEventListener("load", function(evt) {
 		// xy coordinated on image
 		let imgXy = ll2xy(eventObj.lat, eventObj.lon);
 		// Foreground and background colors
+		let level = parseInt(eventObj.type.substring(3));
 		let fg = [255, 255, 255, 255];
-		let bg = [50, 100, 150, 128];
+		let bg = [5 + (level * 25), 255 - (level * 25), 32, 200];
 		let text = eventObj.measurement;
-		renderText(text, imgXy[0], imgXy[1], fg, bg );
+
+
+
+
+		let measurementTxt = "INCOMING SIGNAL: MEASUREMENT #" + measurementNo++;
+		terminalString(measurementTxt, imgXy[0] - (measurementTxt.length * 8) - 8, imgXy[1], [255,255,255,255], [0,0,0,0,255]);
+		let typeTxt = "TYPE: " + eventObj.type;
+		terminalString(typeTxt, imgXy[0] - (measurementTxt.length * 8) - 8, imgXy[1] + 16, [255,255,255,255], [0,0,0,0,255]);
+
+		let latLonTxt = "LATITUDE: " + eventObj.lat + " LONGTITUDE: " + eventObj.lon;
+		terminalString(latLonTxt, imgXy[0] - (measurementTxt.length * 8) - 40, imgXy[1] - 16, [255,255,255,255], [0,0,255,255]);
+		
+		terminalString(text, imgXy[0], imgXy[1], fg, bg);
+		terminalString(eventObj.sensor, imgXy[0], imgXy[1] + 16, fg, bg);
 		// var d = document.createElement("div");
 		// d.textContent = message;
 		// d.innerHTML = '<p style="line-height:40%">' + message + '</p>';
@@ -35,19 +53,14 @@ window.addEventListener("load", function(evt) {
 		// spacer.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
 	};
 
-	var yodelBuffer;
-	var resBuffer = new Map();
 
-	var context = new (window.AudioContext || window.webkitAudioContext)();
 
 	function play(audioBuffer) {
 		const source = context.createBufferSource();
 		source.buffer = audioBuffer;
 		source.connect(context.destination);
 		source.start();
-	}
-
-	(function () {
+	}(function () {
 		'use strict';
 
 		window.fetch("yodel.mp3")
@@ -76,14 +89,37 @@ window.addEventListener("load", function(evt) {
 		var url_string = window.location.href;
 		var url = new URL(url_string);
 		var c = url.searchParams.get("collection");
-		console.log(c);
 		var prefix = ""
 		if (c != null) {
 			prefix = c.concat("/");
 		}
 
 		load(prefix.concat("waiting.mp3"), "waiting");
+		load(prefix.concat("waiting.mp3"), "waiting");
+		load(prefix.concat("air00.mp3"), "air00");
+		load(prefix.concat("air01.mp3"), "air01");
+		load(prefix.concat("air02.mp3"), "air02");
+		load(prefix.concat("air03.mp3"), "air03");
+		load(prefix.concat("air04.mp3"), "air04");
+		load(prefix.concat("air05.mp3"), "air05");
+		load(prefix.concat("air06.mp3"), "air06");
+		load(prefix.concat("air07.mp3"), "air07");
+		load(prefix.concat("air08.mp3"), "air08");
+		load(prefix.concat("air09.mp3"), "air09");
+		load(prefix.concat("air10.mp3"), "air10");
+		load(prefix.concat("rad00.mp3"), "rad00");
+		load(prefix.concat("rad01.mp3"), "rad01");
+		load(prefix.concat("rad02.mp3"), "rad02");
+		load(prefix.concat("rad03.mp3"), "rad03");
+		load(prefix.concat("rad04.mp3"), "rad04");
+		load(prefix.concat("rad05.mp3"), "rad05");
+		load(prefix.concat("rad06.mp3"), "rad06");
+		load(prefix.concat("rad07.mp3"), "rad07");
+		load(prefix.concat("rad08.mp3"), "rad08");
+		load(prefix.concat("rad09.mp3"), "rad09");
+		load(prefix.concat("rad10.mp3"), "rad10");
 
+		/*
 		// Iterating through all the reading types and all the levels
 		// [type][level].mp3
 		let mp3Types = ["air", "rad"];
@@ -97,6 +133,7 @@ window.addEventListener("load", function(evt) {
 				load(prefix.concat(mp3file), mp3Type + mp3num);
 			}
 		}
+		*/
 
 		playButton.onclick = function(evt) {
 			playButton.style.display = "none";
@@ -179,6 +216,7 @@ window.addEventListener("load", function(evt) {
 /*
 	Here is the start of the map code
 */
+let measurementNo = 0;
 
 // DOM elements
 let elms = {
@@ -190,16 +228,75 @@ let elms = {
 	txtCvs: document.getElementById("txtCvs")
 }
 
+// Viewport dimensions
+let vw = null;
+let vh = null;
+
+let getViewportSize = function() {
+	vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+	vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+}
+
+// Current frame timestamp (unixtime with milliseconds) for renering purposes
+let ts = null;
+// Lock to indicate in-progress rendering
+let renderingLock = null;
+// Terminal Drawing Sequence
 // Event - array
 // timestamp with ms — when it should happen
+// c - symbol code
 // x - "terminal text" x
 // y - "terminal text" y,
 // fr, fg, fb, fa - RGBA channels of font symbol
 // br, bg, bb, ba - RGBA channels of background
-// [timestamp with ms, x, y, fr, fg, fb, fa, br, bg, bb, ba]
-let terminalDrawingEvents = [
-
+// [timestamp with ms, c, x, y, fr, fg, fb, fa, br, bg, bb, ba]
+let tds = [
+	
 ];
+// Fixed amount of items
+for(let i = 0; i < 4096; i++) {
+	tds.push(null);
+}
+
+let renderTerminalFrame = function() {
+	if(renderingLock) {
+		return false;
+	}
+
+	renderingLock = true;
+
+	let dateObj = new Date();
+	ts = dateObj.getTime();
+
+	for(let i = 0; i < 4096; i++) {
+		// e - current event
+		let e = tds[i];
+
+		// If there's no event, skipping
+		if(!e) {
+			continue;
+		}
+
+		// ets - event timestamp
+		let ets = e[0];
+		// If the time didn't come yet, skipping
+		if(ets > ts) {
+			continue;
+		}
+
+		// c, xy - symbol code and placement on a screen
+		let c = e[1];
+		let xy = tt2px(e[2], e[3]);
+		// Foreground/background colors
+		let fg = [ e[4], e[5], e[6], e[7] ];
+		let bg = [ e[8], e[9], e[10], e[11] ];
+
+		renderSymbol(c, xy[0], xy[1], fg, bg);
+		tds[i] = null;
+	}
+
+	renderingLock = false;
+}
 
 // Map canvas context
 let mapCvsCtx = elms.mapCvs.getContext("2d");
@@ -283,9 +380,11 @@ let renderSymbol = function(code, x, y, f, b) {
 	mapCvsCtx.putImageData(iID, x, y);
 }
 // Test output
+/*
 for(let i = 0; i < 128; i++) {
 	renderSymbol(i, (256 + (8 * (i - 32))), 256, [255, 255, 255, 255], [0, 0, 0, 0, 128]);
 }
+*/
 
 let renderText = function(text, x, y, f, b) {
 	for(let i = 0; i < text.length; i++) {
@@ -373,18 +472,164 @@ let html2event = function(crypticSigils) {
 // pixel xy to "terminal" text xy
 let px2tt = function(px, py) {
 	let tx = Math.floor(px / 8);
-	let ty = Math.floor(px / 16);
+	let ty = Math.floor(py / 16);
 
 	return [tx, ty];
 }
 // "terminal" text xy to pixel xy
 let tt2px = function(tx, ty) {
 	let px = tx * 8;
-	let py = ty * 8;
+	let py = ty * 16;
 
 	return [px, py];
 }
 
-let terminalString = function(textToOutput, x, y, fg, bg) {
-	
+let framerate = 10;
+
+let terminalString = function(textToOutput, x, y, fg, bg, dontClear = false) {
+	let dateObj = new Date();
+	let startTs = dateObj.getTime();
+	for(let i = 0; i < textToOutput.length; i++) {
+		// Event timestamp 
+		let ets = startTs + ((1000 / framerate) * i);
+		// Symbol code
+		let c = textToOutput.charCodeAt(i);
+		// "Terminal" xy
+		let xy = px2tt(x, y);
+		// Horizontal symbol offset
+		xy[0] += i;
+		// Rendering event array
+		let re = [ets, c, xy[0], xy[1], fg[0], fg[1], fg[2], fg[3], bg[0], bg[1], bg[2], bg[3]];
+		// delay 5000 ms before cleanup
+		let ce = [ets + 5000, 32, xy[0], xy[1], 0, 0, 0, 0, 0, 0, 0, 0];
+
+		// Flags to see if events were placed into Terminal Drawing Sequence
+		let rePlaced = false;
+		let cePlaced = false;
+		// 
+		for(let j = 0; j < 4096; j++) {
+			let e = tds[j];
+
+			// if there's no event, placing our own event
+			if(e === null && (!rePlaced || (!cePlaced && !dontClear))) {
+				if(!rePlaced) {
+					tds[j] = re;
+					rePlaced = true;
+				}
+				else if(!cePlaced && !dontClear) {
+					tds[j] = ce;
+					cePlaced = true;
+				}
+			}
+			
+			// Nothing else can be done to the empty event, skipping it
+			if(e === null) {
+				continue;
+			}
+
+			// If it's a cleanup event after rendering our symbol before its cleanup, erasing it
+			// Coordinates
+			if(e[2] === xy[0] && e[3] === xy[1]) {
+				// If it's cleanup
+				if(e[7] === 0 && e[11] === 0) {
+					// If it prevents our symbol ot be shown for 5 seconds
+					if(e[0] >= ets && e[0] <= (ets + 5000)) {
+						tds[j] = null;
+					}
+				}
+			}
+		}
+	}
+}
+setInterval(renderTerminalFrame, 1000 / framerate);
+
+// Test output
+// terminalString("hello", 35, 22, [255, 255, 255, 255], [0, 0, 0, 255]);
+
+let explainer = [
+	"TRANSMISSION EXPLAINER:",
+	"",
+	"With inspiration from Listen To Wikipedia, ",
+	"Brian Eno’s ambient works, and Nine Inch Nails Ghosts I-IV - ",
+	"safecast.live uses the real time data stream coming in from ",
+	"Safecast’s global network of environmental sensors to trigger a ",
+	"random and ever evolving anti-pattern of audio samples. ",
+	"",
+	"Using hand held mobile sensors, in the 10 years since the 3/11 ",
+	"earthquake and nuclear meltdown at Fukushima Daiichi the non-profit",
+	"organization Safecast has built the largest collection of ",
+	"background radiation measurements ever assembled and placed them ",
+	"entirely into the public domain. Over the last few years a growing ",
+	"network of Safecast designed and maintained sensors have begun to ",
+	"send in live radiation readings from around the world. Marking the ",
+	"10 year anniversary of Safecast, Blues Wireless has designed a ",
+	"fleet of air quality sensors that will do the same, sending open ",
+	"data into Safecast’s system to be freely published out to the ",
+	"world. ",
+	"",
+	"You are listening to that data stream right now, radiation ",
+	"measurements trigger some samples, air quality measurements trigger ",
+	"others. As these measurements are an ever changing random stream, ",
+	"so will this audio constantly evolve."
+];
+
+let credits = [
+	"CREDITS:",
+	"",
+	"Built by:",
+	"    Kether Cortex (Design & Development), ",
+	"    Ray Ozzie (Development & Concept), ",
+	"    Sean Bonner (Audio Editing & Concept),",
+	"    Evgeniy Kaptan (Development, Prototyping)",
+	"",
+	"Audio by: ",
+	"    Nine Inch Nails (Ghosts samples, used under CC), ",
+	"    Hainbach (Michelsonne toy piano samples, used under CC), ",
+	"    Samples From Mars (Polivox synthesizer samples), ",
+	"    Sean Bonner (Buchla music easel samples)"
+]
+
+let renderExplainer = function() {
+	let x = 48;
+	let y = 512;
+	let fg = [200, 220, 40, 255];
+	let bg = [0, 0, 0, 200];
+
+	for(let i = 0; i < explainer.length; i++) {
+		terminalString(explainer[i], x, y + (16 * i), fg, bg, true);
+	}
+
+	setTimeout(renderCredits, 10000);
+}
+
+let renderCredits = function() {
+	let x = 768;
+	let y = 768;
+	let fg = [200, 220, 40, 255];
+	let bg = [0, 0, 0, 200];
+
+	for(let i = 0; i < credits.length; i++) {
+		terminalString(credits[i], x, y + (16 * i), fg, bg, true);
+	}
+}
+
+document.getElementById("explainer_credits").onclick = renderExplainer;
+
+let contextStarted = false;
+let contextPlays = false;
+document.getElementById("play_pause").onclick = function() {
+	if(!contextStarted) {
+		contextStarted = true;
+		contextPlays = true;
+	}
+	else if(contextStarted) {
+		if(contextPlays) {
+			context.suspend();
+			contextPlays = false;
+		}
+		else if(!contextPlays) {
+			context.resume();
+			contextPlays = true;
+		}
+	}
 }
