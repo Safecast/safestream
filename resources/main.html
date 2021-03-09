@@ -1,181 +1,96 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<script>
+<head>
+	<title>SAFECAST DATA TERMINAL</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			margin: 0;
+		}
 
-		 window.addEventListener("load", function(evt) {
+		#mapContainer {
+			z-index: 0;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
 
-			 var output = document.getElementById("output");
-			 var input = document.getElementById("input");
-			 var playButton = document.getElementById("play");
-			 var header = document.getElementById("header");
-			 var spacer = document.getElementById("spacer");
+		#mapImg, #mapCvs {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
 
-			 var ws;
+		#mapImg {
+			z-index: 0;
+		}
 
-			 var print = function(message) {
-				 var d = document.createElement("div");
-//				 d.textContent = message;
-				 d.innerHTML = '<p style="line-height:40%">' + message + '</p>';
-				 d = d.firstChild;
-				 output.appendChild(d);
-				 spacer.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-			 };
+		#mapCvs {
+			z-index: 256;
+		}
 
-			 var yodelBuffer;
-			 var resBuffer = new Map();
+		#txtCvs {
+			z-index: 1024;
+		}
 
-			 var context = new (window.AudioContext || window.webkitAudioContext)();
+		#header, #output, #footer, #spacer {
+			display: none;
+			position: absolute;
+			top: -100px;
+		}
 
-			 function play(audioBuffer) {
-				 const source = context.createBufferSource();
-				 source.buffer = audioBuffer;
-				 source.connect(context.destination);
-				 source.start();
-			 }
-
-			 (function () {
-				 'use strict';
-
-				 window.fetch("yodel.mp3")
-					   .then(response => response.arrayBuffer())
-					   .then(arrayBuffer => context.decodeAudioData(arrayBuffer,
-																	audioBuffer => {
-																		playButton.disabled = false;
-																		yodelBuffer = audioBuffer;
-																	},
-																	error =>
-																		console.error(error)
-					   ))
-
-				 function load(resURL, resID) {
-					 window.fetch(resURL)
-						   .then(response => response.arrayBuffer())
-						   .then(arrayBuffer => context.decodeAudioData(arrayBuffer,
-																		audioBuffer => {
-																			resBuffer.set(resID, audioBuffer)
-																		},
-																		error =>
-																			console.error(error)
-						   ))
-				 }
-
-				 var url_string = window.location.href;
-				 var url = new URL(url_string);
-				 var c = url.searchParams.get("collection");
-				 console.log(c);
-				 var prefix = ""
-				 if (c != null) {
-					 prefix = c.concat("/");
-				 }
-				 load(prefix.concat("waiting.mp3"), "waiting");
-				 load(prefix.concat("air00.mp3"), "air00");
-				 load(prefix.concat("air01.mp3"), "air01");
-				 load(prefix.concat("air02.mp3"), "air02");
-				 load(prefix.concat("air03.mp3"), "air03");
-				 load(prefix.concat("air04.mp3"), "air04");
-				 load(prefix.concat("air05.mp3"), "air05");
-				 load(prefix.concat("air06.mp3"), "air06");
-				 load(prefix.concat("air07.mp3"), "air07");
-				 load(prefix.concat("air08.mp3"), "air08");
-				 load(prefix.concat("air09.mp3"), "air09");
-				 load(prefix.concat("air10.mp3"), "air10");
-				 load(prefix.concat("rad00.mp3"), "rad00");
-				 load(prefix.concat("rad01.mp3"), "rad01");
-				 load(prefix.concat("rad02.mp3"), "rad02");
-				 load(prefix.concat("rad03.mp3"), "rad03");
-				 load(prefix.concat("rad04.mp3"), "rad04");
-				 load(prefix.concat("rad05.mp3"), "rad05");
-				 load(prefix.concat("rad06.mp3"), "rad06");
-				 load(prefix.concat("rad07.mp3"), "rad07");
-				 load(prefix.concat("rad08.mp3"), "rad08");
-				 load(prefix.concat("rad09.mp3"), "rad09");
-				 load(prefix.concat("rad10.mp3"), "rad10");
-
-				 playButton.onclick = function(evt) {
-					 playButton.style.display = "none";
-					 play(yodelBuffer);
-					 return false;
-				 };
-
-			 }());
-
-			 var enterfn = function(evt) {
-				 if (ws) {
-					 return false;
-				 }
-				 ws = new WebSocket("{{.}}");
-				 ws.onopen = function(evt) {
-					 header.style.display = "inline";
-				 }
-				 ws.onclose = function(evt) {
-					 print("connection closed");
-					 ws = null;
-				 }
-				 ws.onmessage = function(evt) {
-					 header.style.display = "none";
-					 var line = evt.data
-					 print(line);
-					 var firstWord = line.substr(0, line.indexOf(" "));
-					 play(resBuffer.get(firstWord));
-					 //			document.getElementById(firstWord).click()
-				 }
-				 ws.onerror = function(evt) {
-					 print("error: " + evt.data);
-				 }
-				 return false;
-			 };
-
-			 var exitfn = function(evt) {
-				 if (!ws) {
-					 return false;
-				 }
-				 ws.send(input.value);
-				 return false;
-			 };
-
-			 var e = document.getElementById("open");
-			 if (e) { e.onclick = enterfn };
-			 var e = document.getElementById("send")
-			 if (e) { e.onclick = exitfn };
-			 var e = document.getElementById("close")
-			 if (e) {
-				 e.onclick = function(evt) {
-					 if (!ws) {
-						 return false;
-					 }
-					 ws.close();
-					 return false;
-				 };
-			 };
-
-			 enterfn();
-
-		 });
-		</script>
-	</head>
-	<body>
-		<table width=100% height=100%>
-			<tr>
-				<td>
-					<img src="safecast-small.png"/>
-				</td>
-			</tr>
-		</table>
-		<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
-		<div id="output"></div>
-		<div id="footer">
-			<p><p>
-				<form>
-					<!--
-						 <p><input id="input" type="text" value="">
-						 <button id="send">request</button>
-						 <p>
-					   -->
-					<button id="play" disabled>Listen to Event Stream</button>
-				</form>
-		</div>
-		<div id="spacer"><p style="color:white">##</p></div>
-	</body>
+		#navigation {
+			position: absolute;
+			top: 0;
+			left: 45px;
+			background-color: rgba(0, 32, 0, 0.8);
+			color: white;
+			z-index: 2048;
+		}
+	</style>
+</head>
+<body>
+	<noscript>This page requires Javascript to function</noscript>
+	<div id="navigation">
+		<button id="play_pause">PLAY/PAUSE</button>
+		|
+		<button id="explainer_credits">ABOUT/CREDITS</button>
+		<br>
+		Links: 
+		<a href="https://safecast.org/donate">DONATE TO SAFECAST</a>
+		|
+		<a href="https://safecast.org/">SAFECAST</a>
+		|
+		<a href="https://blues.io">BLUES WIRELESS</a>
+		<br>
+		Soundpacks:
+		<a href="/?collection=NIN">NIИ:GHOSTS</a>
+		|
+		<a href="/?collection=sean">MICHELSONNE</a>
+		|
+		<a href="/?collection=buchla">BUCHLA EASEL</a>
+		|
+		<a href="/?collection=polivox">ПОЛИВОКС</a>
+	</div>
+	<div id="mapContainer">
+		<img src="map.png" id="mapImg" width="2048" height="1024">
+		<canvas id="mapCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas>
+		<canvas id="txtCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas>
+	</div>
+	<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
+	<div id="output"></div>
+	<div id="footer">
+		<p><p>
+			<form>
+				
+					 <p><input id="input" type="text" value="">
+					 <button id="send">request</button>
+					 <p>
+				   
+				<button id="play" disabled>Listen to Event Stream</button>
+			</form>
+	</div>
+	<div id="spacer"><p style="color:white">##</p></div>
+	<script src="pmm.js"></script>
+</body>
 </html>
