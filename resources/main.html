@@ -3,12 +3,17 @@
 <head>
 	<title>SAFECAST DATA TERMINAL</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">
 		body {
 			margin: 0;
+			background-color: rgb(0, 4, 0);
+			overflow-x: hidden;
+			overflow-y: hidden;
 		}
 
 		#mapContainer {
+			display: none;
 			z-index: 0;
 			position: absolute;
 			top: 0;
@@ -47,36 +52,163 @@
 			color: white;
 			z-index: 2048;
 		}
+
+		#brandingCvs {
+			position: fixed;
+			left: 0;
+			top: 0;
+		}
+
+		#showCvs {
+			position: fixed;
+			top: 0;
+			left: 44px;
+			z-index: 256;
+		}
+
+		#txtCvs {
+			position: fixed;
+			top: 0;
+			left: 44px;
+			z-index: 512;
+		}
+		#menu {
+			position: fixed;
+			top: 0;
+			left: 44;
+			z-index: 768;
+		}
+		#samples {
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			z-index: 768;
+		}
+
+		.samplesLink {
+			position: fixed;
+			z-index: 1024;
+			right: 0;
+			display: block;
+			width: 200;
+			color: rgba(0, 0, 0, 0);
+			background-color: rgba(0, 0, 0, 0);
+			height: 32px;
+		}
+
+		#samples_nin {
+			bottom: 96px;
+		}
+
+		#samples_sean {
+			bottom: 64px;
+		}
+
+		#samples_buchla {
+			bottom: 32px;
+		}
+
+		#samples_polivox {
+			bottom: 0;
+		}
+
+		#safecastLink {
+			position: fixed;
+			left: 0;
+			top: 0;
+			z-index: 1024;
+
+			display: block;
+			width: 44px;
+			height: 100vh;
+			
+			color: rgba(0, 0, 0, 0);
+			background-color: rgba(0, 0, 0, 0);
+			border: 0;
+		}
+
+		.menuItem {
+			position: fixed;
+			z-index: 1024;
+			left: 40px;
+			border: none;
+			display: block;
+			width: 290px;
+			outline: none;
+			color: rgba(0, 0, 0, 0);
+			background-color: rgba(0, 0, 0, 0);
+			height: 32px;
+		}
+
+		#play_btn {
+			top: 0;
+		}
+
+		#donate_link {
+			top: 32px;
+		}
+
+		#blues_link {
+			top: 64px;
+		}
+
+		#about_btn {
+			top: 96px;
+		}
+
+		#credits_btn {
+			top: 128px;
+		}
+
+		#explainer_img {
+			position: fixed;
+			left: calc((100% - 325px) / 2);
+			top: calc((100% - 200px) / 2);
+			z-index: 1024;
+		}
+
+		#credits_img {
+			position: fixed;
+			left: calc((100% - 452px) / 2);
+			top: calc((100% - 315px) / 2);
+			z-index: 1024;
+		}
 	</style>
 </head>
 <body>
 	<noscript>This page requires Javascript to function</noscript>
+	<a id="safecastLink" href="https://safecast.org/" target="_blank">SAFECAST</a>
 	<div id="navigation">
-		<button id="play_pause">PLAY/PAUSE</button>
-		|
-		<button id="explainer_credits">ABOUT/CREDITS</button>
+		<img id="menu" src="menu.png">
+		<button class="menuItem" id="play_btn">PLAY/PAUSE</button>
+		<a class="menuItem" id="donate_link" href="https://safecast.org/donate" target="_blank">DONATE TO SAFECAST</a>
+		<a class="menuItem" id="blues_link" href="https://blues.io" target="_blank">BLUES WIRELESS</a>
+		<button class="menuItem" id="about_btn" id="explainer">ABOUT</button>
+		<button class="menuItem" id="credits_btn">CREDITS</button>
 		<br>
-		Links: 
-		<a href="https://safecast.org/donate">DONATE TO SAFECAST</a>
-		|
-		<a href="https://safecast.org/">SAFECAST</a>
-		|
-		<a href="https://blues.io">BLUES WIRELESS</a>
-		<br>
-		Soundpacks:
-		<a href="/?collection=NIN">NIИ:GHOSTS</a>
-		|
-		<a href="/?collection=sean">MICHELSONNE</a>
-		|
-		<a href="/?collection=buchla">BUCHLA EASEL</a>
-		|
-		<a href="/?collection=polivox">ПОЛИВОКС</a>
+		<img id="samples" src="samples.png">
+		<a class="samplesLink" id="samples_nin" href="/?collection=NIN">NIИ:GHOSTS</a>
+		<a class="samplesLink" id="samples_sean" href="/?collection=sean">MICHELSONNE</a>
+		<a class="samplesLink" id="samples_buchla" href="/?collection=buchla">BUCHLA EASEL</a>
+		<a class="samplesLink" id="samples_polivox" href="/?collection=polivox">ПОЛИВОКС</a>
 	</div>
 	<div id="mapContainer">
 		<img src="map.png" id="mapImg" width="2048" height="1024">
 		<canvas id="mapCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas>
-		<canvas id="txtCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas>
+		<!-- <canvas id="txtCvs" width="2048" height="1024">Your browser doesn't support canvas.</canvas> -->
 	</div>
+
+	<div id="actualMapContainer">
+		<canvas id="brandingCvs">Your browser doesn't support canvas.</canvas>
+		<canvas id="showCvs">Your browser doesn't support canvas.</canvas>
+		<div id="navigation">
+			
+		</div>
+		<canvas id="txtCvs">Your browser doesn't support canvas.</canvas>
+	</div>
+
+	<img id="explainer_img" src="explainer.png" style="display:none">
+	<img id="credits_img" src="credits.png" style="display:none">
 	<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
 	<div id="output"></div>
 	<div id="footer">

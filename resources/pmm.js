@@ -1,12 +1,107 @@
 // pmm.js
 // Pretty Map Machine
 
+let getRandomInt = function(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+
 /*
 	I will leave this section mostly untouched by now, so it won't break now.	
 */
 var yodelBuffer;
 var resBuffer = new Map();
 var context = new (window.AudioContext || window.webkitAudioContext)();
+// context.suspend();
+let currentRenderingY = 0;
+
+var print = function(message) {
+	let eventObj = html2event(message);
+	// If it's not the actual event, skipping it
+	if(eventObj === null) {
+		terminalString("no signal", getRandomInt(elms.showCvs.width) - 80, currentRenderingY, [255,255,255,255], [0,0,255,255]);
+		return;
+	}
+	// xy coordinated on image
+	let imgXy = ll2xy(eventObj.lat, eventObj.lon);
+	// Foreground and background colors
+	let level = parseInt(eventObj.type.substring(3));
+	let fg = [255, 255, 255, 255];
+	let bg = [5 + (level * 25), 255 - (level * 25), 32, 200];
+	let text = eventObj.measurement;
+
+	let patchX = imgXy[0] - (elms.showCvs.width / 2);
+	let xOffset = 0;
+	if(patchX < 44) {
+		xOffset = 44 - patchX;
+		patchX = 44;
+	}
+	let patchW = elms.showCvs.width;
+	let patchH = 96 + getRandomInt(32);
+	if(patchH % 2 === 1) {
+		patchH += 1;
+	}
+	let patchY = imgXy[1] - patchH / 2;
+	let mapPatchImageData = mapCvsCtx.getImageData(patchX, patchY, patchW, patchH);
+
+	let rShift = getRandomInt(100);
+	let gShift = getRandomInt(100);
+	let bShift = getRandomInt(100);
+
+	let invertedDice = getRandomInt(100);
+
+	let glitchOffset = getRandomInt(patchW * 0.75 * 4);
+	let glitchRShift = getRandomInt(50);
+	let glitchGShift = getRandomInt(50);
+	let glitchBShift = getRandomInt(50);
+
+	for(let i = 0; i < mapPatchImageData.data.length; i+=4) {
+		mapPatchImageData.data[i + 0] += rShift;
+		mapPatchImageData.data[i + 1] += gShift;
+		mapPatchImageData.data[i + 2] += bShift;
+		if(mapPatchImageData.data[i + 3] === 0) {
+			mapPatchImageData.data[i + 3] = 255;
+			mapPatchImageData.data[i + 0] = mapPatchImageData.data[i - glitchOffset] - glitchRShift;
+			mapPatchImageData.data[i + 1] = mapPatchImageData.data[i - glitchOffset] - glitchGShift;
+			mapPatchImageData.data[i + 2] = mapPatchImageData.data[i - glitchOffset] - glitchBShift;
+		}
+
+		if(invertedDice >= 50) {
+			mapPatchImageData.data[i + 0] = 255 - mapPatchImageData.data[i + 0];
+			mapPatchImageData.data[i + 1] = 255 - mapPatchImageData.data[i + 1];
+			mapPatchImageData.data[i + 2] = 255 - mapPatchImageData.data[i + 2];
+		}
+		
+	}
+	showCvsCtx.putImageData(mapPatchImageData, 0, currentRenderingY);
+
+	sigX = (patchW / 2) - xOffset;
+	sigY = (patchH / 2) + currentRenderingY;
+
+	currentRenderingY += patchH;
+	if(currentRenderingY > vh) {
+		currentRenderingY = 0;
+	}
+
+	
+	let measurementTxt = "MEASUREMENT " + measurementNo++;
+	terminalString(measurementTxt, sigX - (measurementTxt.length * 8) - 8, sigY, [255,255,255,255], [0,0,0,0,255]);
+	let typeTxt = "TYPE: " + eventObj.type;
+	terminalString(typeTxt, sigX - (measurementTxt.length * 8) - 8, sigY + 16, [255,255,255,255], [0,0,0,0,255]);
+
+	let latLonTxt = "LAT:" + eventObj.lat + " LON:" + eventObj.lon;
+	terminalString(latLonTxt, sigX - (measurementTxt.length * 8) - 16, sigY - 16, [255,255,255,255], [0,0,255,255]);
+	
+	terminalString(text, sigX, sigY, fg, bg);
+	terminalString(eventObj.sensor, sigX, sigY + 16, fg, bg);
+	
+	// var d = document.createElement("div");
+	// d.textContent = message;
+	// d.innerHTML = '<p style="line-height:40%">' + message + '</p>';
+	// d = d.firstChild;
+	// output.appendChild(d);
+	// spacer.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+};
 
 window.addEventListener("load", function(evt) {
 
@@ -18,40 +113,6 @@ window.addEventListener("load", function(evt) {
 
 	var ws;
 
-	var print = function(message) {
-		let eventObj = html2event(message);
-		// If it's not the actual event, skipping it
-		if(eventObj === null) {
-			return;
-		}
-		// xy coordinated on image
-		let imgXy = ll2xy(eventObj.lat, eventObj.lon);
-		// Foreground and background colors
-		let level = parseInt(eventObj.type.substring(3));
-		let fg = [255, 255, 255, 255];
-		let bg = [5 + (level * 25), 255 - (level * 25), 32, 200];
-		let text = eventObj.measurement;
-
-
-
-
-		let measurementTxt = "INCOMING SIGNAL: MEASUREMENT #" + measurementNo++;
-		terminalString(measurementTxt, imgXy[0] - (measurementTxt.length * 8) - 8, imgXy[1], [255,255,255,255], [0,0,0,0,255]);
-		let typeTxt = "TYPE: " + eventObj.type;
-		terminalString(typeTxt, imgXy[0] - (measurementTxt.length * 8) - 8, imgXy[1] + 16, [255,255,255,255], [0,0,0,0,255]);
-
-		let latLonTxt = "LATITUDE: " + eventObj.lat + " LONGTITUDE: " + eventObj.lon;
-		terminalString(latLonTxt, imgXy[0] - (measurementTxt.length * 8) - 40, imgXy[1] - 16, [255,255,255,255], [0,0,255,255]);
-		
-		terminalString(text, imgXy[0], imgXy[1], fg, bg);
-		terminalString(eventObj.sensor, imgXy[0], imgXy[1] + 16, fg, bg);
-		// var d = document.createElement("div");
-		// d.textContent = message;
-		// d.innerHTML = '<p style="line-height:40%">' + message + '</p>';
-		// d = d.firstChild;
-		// output.appendChild(d);
-		// spacer.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-	};
 
 
 
@@ -225,17 +286,71 @@ let elms = {
 	// canvas overlay
 	mapCvs: document.getElementById("mapCvs"),
 	// "terminal" canvas
-	txtCvs: document.getElementById("txtCvs")
+	txtCvs: document.getElementById("txtCvs"),
+	// Branding canvas
+	brandingCvs: document.getElementById("brandingCvs"),
+	// Show canvas
+	showCvs: document.getElementById("showCvs")
+};
+
+// Map canvas context
+let mapCvsCtx = elms.mapCvs.getContext("2d");
+// Branding canvascontext
+let brandingCvsCtx = elms.brandingCvs.getContext("2d");
+// SHOW canvas context
+let showCvsCtx = elms.showCvs.getContext("2d");
+// Terminal canvas context
+let txtCvsCtx = elms.txtCvs.getContext("2d");
+
+let mapCached = false;
+let cacheMap = function() {
+	// Caching the map
+	mapCvsCtx.drawImage(elms.mapImg, 0, 0);
+	mapCached = true;
+}
+
+let applyBranding = function() {
+	// Caching map in the intermediate canvas to get image data (if not cached previously)
+	if(!mapCached) {
+		cacheMap();
+	}
+	// getting branding strip image data
+	let brandingStripImageData = mapCvsCtx.getImageData(0, 0, 44, 1024);
+	// Getting screen height / branding height porportions to zoom
+	brandingCvs.width = 44;
+	brandingCvs.height = vh;
+	brandingCvsCtx.putImageData(brandingStripImageData, 0, 0);
+	placeContainer();
+}
+
+let placeContainer = function() {
+	elms.showCvs.width = vw - 44;
+	elms.showCvs.height = vh;
+	elms.txtCvs.width = vw - 44;
+	elms.txtCvs.height = vh;
+
 }
 
 // Viewport dimensions
 let vw = null;
 let vh = null;
+let portrait = false;
+let proportion = null;
 
 let getViewportSize = function() {
 	vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 	vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+	proportion = vh/1024;
+	portrait = vw < vh;
+	applyBranding();
 }
+
+elms.mapImg.onload = function() {
+	cacheMap();
+	applyBranding();
+}
+getViewportSize();
+window.onresize = getViewportSize;
 
 // Current frame timestamp (unixtime with milliseconds) for renering purposes
 let ts = null;
@@ -254,7 +369,7 @@ let tds = [
 	
 ];
 // Fixed amount of items
-for(let i = 0; i < 4096; i++) {
+for(let i = 0; i < 2048; i++) {
 	tds.push(null);
 }
 
@@ -268,7 +383,7 @@ let renderTerminalFrame = function() {
 	let dateObj = new Date();
 	ts = dateObj.getTime();
 
-	for(let i = 0; i < 4096; i++) {
+	for(let i = 0; i < 2048; i++) {
 		// e - current event
 		let e = tds[i];
 
@@ -298,8 +413,6 @@ let renderTerminalFrame = function() {
 	renderingLock = false;
 }
 
-// Map canvas context
-let mapCvsCtx = elms.mapCvs.getContext("2d");
 
 // mg - map geometry
 let mg = {
@@ -377,7 +490,7 @@ let renderSymbol = function(code, x, y, f, b) {
 		}
 	}
 	// Rendering result
-	mapCvsCtx.putImageData(iID, x, y);
+	txtCvsCtx.putImageData(iID, x, y);
 }
 // Test output
 /*
@@ -507,7 +620,7 @@ let terminalString = function(textToOutput, x, y, fg, bg, dontClear = false) {
 		let rePlaced = false;
 		let cePlaced = false;
 		// 
-		for(let j = 0; j < 4096; j++) {
+		for(let j = 0; j < 2048; j++) {
 			let e = tds[j];
 
 			// if there's no event, placing our own event
@@ -590,8 +703,8 @@ let credits = [
 ]
 
 let renderExplainer = function() {
-	let x = 48;
-	let y = 512;
+	let x = 0;
+	let y = 60;
 	let fg = [200, 220, 40, 255];
 	let bg = [0, 0, 0, 200];
 
@@ -613,23 +726,43 @@ let renderCredits = function() {
 	}
 }
 
-document.getElementById("explainer_credits").onclick = renderExplainer;
+// document.getElementById("explainer_credits").onclick = renderExplainer;
 
-let contextStarted = false;
-let contextPlays = false;
-document.getElementById("play_pause").onclick = function() {
-	if(!contextStarted) {
-		contextStarted = true;
-		contextPlays = true;
+document.getElementById("play_btn").onclick = function() {
+	if(context.state === "running") {
+		context.suspend();
 	}
-	else if(contextStarted) {
-		if(contextPlays) {
-			context.suspend();
-			contextPlays = false;
-		}
-		else if(!contextPlays) {
-			context.resume();
-			contextPlays = true;
-		}
+	else {
+		context.resume();
 	}
 }
+
+document.getElementById("actualMapContainer").onclick = function() {
+	let navigationEl = document.getElementById("navigation");
+	navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
+}
+
+document.getElementById("about_btn").onclick = function() {
+	let navigationEl = document.getElementById("navigation");
+	navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
+	let explainerImg = document.getElementById("explainer_img");
+	explainerImg.style.display = "block";
+	explainerImg.onclick = function(e) {
+		e.target.style.display = "none";
+		let navigationEl = document.getElementById("navigation");
+		navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
+	}
+}
+
+document.getElementById("credits_btn").onclick = function() {
+	let navigationEl = document.getElementById("navigation");
+	navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
+	let creditsImg = document.getElementById("credits_img");
+	creditsImg.style.display = "block";
+	creditsImg.onclick = function(e) {
+		e.target.style.display = "none";
+		let navigationEl = document.getElementById("navigation");
+		navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
+	}
+}
+
