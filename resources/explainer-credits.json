@@ -1,0 +1,43 @@
+{
+	"explainer": [
+		"TRANSMISSION EXPLAINER:",
+		"",
+		"With inspiration from Listen To Wikipedia, ",
+		"Brian Eno’s ambient works, and Nine Inch Nails Ghosts I-IV - ",
+		"safecast.live uses the real time data stream coming in from ",
+		"Safecast’s global network of environmental sensors to trigger a ",
+		"random and ever evolving anti-pattern of audio samples. ",
+		"",
+		"Using hand held mobile sensors, in the 10 years since the 3/11 ",
+		"earthquake and nuclear meltdown at Fukushima Daiichi the non-profit",
+		".organization Safecast has built the largest collection of ",
+		"background radiation measurements ever assembled and placed them ",
+		"entirely into the public domain. Over the last few years a growing ",
+		"network of Safecast designed and maintained sensors have begun to ",
+		"send in live radiation readings from around the world. Marking the ",
+		"10 year anniversary of Safecast, Blues Wireless has designed a ",
+		"fleet of air quality sensors that will do the same, sending open ",
+		"data into Safecast’s system to be freely published out to the ",
+		"world. ",
+		"",
+		"You are listening to that data stream right now, radiation ",
+		"measurements trigger some samples, air quality measurements trigger ",
+		"others. As these measurements are an ever changing random stream, ",
+		"so will this audio constantly evolve."
+	],
+	"credits": [
+		"Credits:",
+		"",
+		"Built by:",
+		"    Kether Cortex (Design & Development), ",
+		"    Ray Ozzie (Development & Concept), ",
+		"    Sean Bonner (Audio Editing & Concept),",
+		"    Evgeniy Kaptan (Development, Prototyping)",
+		"",
+		"Audio by: ",
+		"    Nine Inch Nails (Ghosts samples, used under CC), ",
+		"    Hainbach (Michelsonne toy piano samples, used under CC), ",
+		"    Samples From Mars (Polivox synthesizer samples), ",
+		"    Sean Bonner (Buchla music easel samples)"
+	]
+}
