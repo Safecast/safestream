@@ -4,6 +4,15 @@
 	<title>SAFECAST DATA TERMINAL</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Open Graph tags -->
+	<meta property="og:title" content="SAFECAST DATA TERMINAL" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://safecast.live/" />
+	<meta property="og:image" content="https://safecast.live/ogimage.png" />
+	<meta property="og:description" content="Real-time radiation and air quality data shown on a map" />
+	<meta property="og:site_name" content="Safecast" />
+
 	<style type="text/css">
 		body {
 			margin: 0;
@@ -133,7 +142,7 @@
 			left: 40px;
 			border: none;
 			display: block;
-			width: 290px;
+			width: 400px;
 			outline: none;
 			color: rgba(0, 0, 0, 0);
 			background-color: rgba(0, 0, 0, 0);
@@ -160,6 +169,10 @@
 			top: 128px;
 		}
 
+		#share_btn {
+			top: 160px;
+		}
+
 		#explainer_img {
 			position: fixed;
 			left: calc((100% - 325px) / 2);
@@ -173,6 +186,40 @@
 			top: calc((100% - 315px) / 2);
 			z-index: 1024;
 		}
+
+		#sharingCvs  {
+			position: fixed;
+			top: 0;
+			left: 0;
+		}
+
+		#sharingLink {
+			position: fixed;
+			bottom: 0;
+			right: 0;
+		}
+
+		.explainer {
+			position: fixed;
+			height: 100%;
+			width: 100%;
+			color: white;
+			background-color: black;
+			font-family: monospace;
+			font-size: 16px;
+			overflow-y: scroll;
+		}
+
+		.closer {
+			color: white;
+			background-color: black;
+			font-family: monospace;
+			font-size: 16px;
+		}
+
+		.explainer p {
+			max-width: 500px;
+		}
 	</style>
 </head>
 <body>
@@ -185,7 +232,8 @@
 		<a class="menuItem" id="blues_link" href="https://blues.io" target="_blank">BLUES WIRELESS</a>
 		<button class="menuItem" id="about_btn" id="explainer">ABOUT</button>
 		<button class="menuItem" id="credits_btn">CREDITS</button>
-		<br>
+		<button class="menuItem" id="share_btn">SHARE</button>
+
 		<img id="samples" src="samples.png">
 		<a class="samplesLink" id="samples_nin" href="/?collection=NIN">NIИ:GHOSTS</a>
 		<a class="samplesLink" id="samples_sean" href="/?collection=sean">MICHELSONNE</a>
@@ -209,6 +257,79 @@
 
 	<img id="explainer_img" src="explainer.png" style="display:none">
 	<img id="credits_img" src="credits.png" style="display:none">
+	<canvas id="sharingCvs" width="1" height="1" style="z-index: 0; display: none;"></canvas>
+	<a href="#" id="sharingLink" target="_blank" style="z-index: 0; display: none;">
+		<img src="linkcreated.png">
+	</a>
+
+	<div class="explainer" id="about" style="display: none;">
+		<button class="closer" id="close_about">CLOSE [X]</button>
+		<p>
+			With inspiration from <a href="http://listen.hatnote.com/" target="_blank">Listen To Wikipedia</a>, <a href="https://www.nytimes.com/2020/04/29/arts/music/brian-eno-ambient-songs.html" target="_blank">Brian Eno’s ambient works</a>, and <a href="https://en.wikipedia.org/wiki/Ghosts_I%E2%80%93IV" target="_blank">Nine Inch Nails Ghosts I-IV</a> - safecast.live uses the real time data stream coming in from Safecast’s global network of environmental sensors to trigger a random and ever evolving anti-pattern of audio samples.
+		</p>
+		<p>
+			Using hand held mobile sensors, in the 10 years since the 3/11 earthquake and nuclear meltdown at Fukushima Daiichi the non-profit organization Safecast has built the largest collection of background radiation measurements ever assembled and placed them entirely into the public domain. Over the last few years a growing network of Safecast designed and maintained sensors have begun to send in live radiation readings from around the world.	
+		</p>
+		<p>
+			Marking the 10 year anniversary of Safecast, Blues Wireless has designed a fleet of air quality sensors that will do the same, sending open data into Safecast’s system to be freely published out to the world. You are listening to that data stream right now, radiation measurements trigger some samples, air quality measurements trigger others. As these measurements are an ever changing random stream, so will this audio constantly evolve.	
+		</p>
+		 <pre>
+		 	
+
+
+
+
+
+
+
+		 </pre>
+	</div>
+
+	<div class="explainer" id="credits" style="display: none;">
+		<button class="closer" id="close_credits">CLOSE [X]</button>
+		<h3>Built by:</h3>
+		<p>
+			<a href="https://instagram.com/kethercortex" target="_blank">KETHER CORTEX</a> — Design, Development
+		</p>
+		<p>
+			<a href="https://safecast.org/team/ray-ozzie/" target="_blank">RAY OZZIE</a> — Development, concept
+		</p>
+		<p>
+			<a href="https://seanbonner.com" target="_blank">SEAN BONNER</a> — Audio Editing, Concept
+		</p>
+
+		<p>
+			EVEGENIY KAPTAN — Development, Prototyping
+		</p>
+
+		<h3>Audio by:</h3>
+		<p>
+			<a href="https://nin.com" target="_blank">NINE INCH NAILS</a> — Ghosts I-IV samples, used under CC
+		</p>
+			
+		<p>
+			<a href="https://www.hainbachmusik.com/" target="_blank">HAINBACH</a> — Michelsonne toy piano samples, used under CC
+		</p>
+
+		<p>
+			<a href="https://samplesfrommars.com/" target="_blank">SAMPLES FROM MARS</a> — Polivox synthesizer samples
+		</p>
+
+		<p>
+			<a href="https://seanbonner.com" target="_blank">SEAN BONNER</a> — Buchla music easel samples
+		</p>
+
+		 <pre>
+		 	
+
+
+
+
+
+
+
+		 </pre>
+	</div>
 	<div id="header" hidden>One moment please, as we wait for the next Safecast event...</div>
 	<div id="output"></div>
 	<div id="footer">

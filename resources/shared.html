@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SAFECAST.LIVE STATUS SNAPSHOT</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style type="text/css">
+		body {
+			margin: 0;
+			background-color: black;
+			font-family: monospace;
+			color: white;
+			font-size: 16pt;
+		}
+
+		button {
+			background-color: black;
+			font-family: monospace;
+			color: white;
+			font-size: 16pt;
+		}
+	</style>
+</head>
+<body>
+	<a href="https://safecast.org/">SAFECAST</a> |
+	<a href="https://safecast.live/">SAFECAST.LIVE</a> |
+	<a href="https://safecast.org/donate">DONATE TO SAFECAST</a> |
+	<a href="https://blues.io">BLUES WIRELESS</a> |
+	<button id="copyLink">COPY LINK</button>
+	<img src="" id="sharedImg">
+	<script type="text/javascript">
+		let storageUrl = "https://safecast-live-us-west-2-ith8aefe.s3.us-west-2.amazonaws.com/";
+		let code = window.location.href.split("=")[1];
+		document.getElementById("sharedImg").src = storageUrl + code + ".png";
+
+		document.getElementById("copyLink").onclick = function() {
+			const el = document.createElement('textarea');
+			el.value = window.location.href;
+			document.body.appendChild(el);
+			el.select();
+			document.execCommand('copy');
+			document.body.removeChild(el);
+		};
+	</script>
+</body>
+</html>
