@@ -290,7 +290,9 @@ let elms = {
 	// Branding canvas
 	brandingCvs: document.getElementById("brandingCvs"),
 	// Show canvas
-	showCvs: document.getElementById("showCvs")
+	showCvs: document.getElementById("showCvs"),
+	// Sharing canvas
+	sharingCvs: document.getElementById("sharingCvs"),
 };
 
 // Map canvas context
@@ -301,12 +303,16 @@ let brandingCvsCtx = elms.brandingCvs.getContext("2d");
 let showCvsCtx = elms.showCvs.getContext("2d");
 // Terminal canvas context
 let txtCvsCtx = elms.txtCvs.getContext("2d");
+// Sharing canvas context
+let sharingCvsCtx = elms.sharingCvs.getContext("2d");
 
 let mapCached = false;
 let cacheMap = function() {
 	// Caching the map
 	mapCvsCtx.drawImage(elms.mapImg, 0, 0);
 	mapCached = true;
+
+	let mapID = mapCvsCtx.getImageData(44, 0, vw - 44, vh);
 }
 
 let applyBranding = function() {
@@ -324,10 +330,29 @@ let applyBranding = function() {
 }
 
 let placeContainer = function() {
+	let showCvsImageData = showCvsCtx.getImageData(0, 0, elms.showCvs.width, elms.showCvs.height);
 	elms.showCvs.width = vw - 44;
 	elms.showCvs.height = vh;
+	showCvsCtx.putImageData(showCvsImageData, 0, 0);
+
+	showCvsImageData = showCvsCtx.getImageData(0, 0, elms.showCvs.width, elms.showCvs.height);
+
+	for(let i = 0; i < showCvsImageData.data.length; i+=4) {
+		if(showCvsImageData.data[i+3] === 0) {
+			let greyscale = getRandomInt(32);
+			showCvsImageData.data[i+0] = greyscale;
+			showCvsImageData.data[i+1] = greyscale;
+			showCvsImageData.data[i+2] = greyscale;
+			showCvsImageData.data[i+3] = 255;
+		}
+	}
+
+	showCvsCtx.putImageData(showCvsImageData, 0, 0);
+
+	let txtCvsImageData = txtCvsCtx.getImageData(0, 0, elms.txtCvs.width, elms.txtCvs.height);
 	elms.txtCvs.width = vw - 44;
 	elms.txtCvs.height = vh;
+	txtCvsCtx.putImageData(txtCvsImageData, 0, 0);
 
 }
 
@@ -743,26 +768,110 @@ document.getElementById("actualMapContainer").onclick = function() {
 }
 
 document.getElementById("about_btn").onclick = function() {
-	let navigationEl = document.getElementById("navigation");
-	navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
-	let explainerImg = document.getElementById("explainer_img");
-	explainerImg.style.display = "block";
-	explainerImg.onclick = function(e) {
-		e.target.style.display = "none";
-		let navigationEl = document.getElementById("navigation");
-		navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
-	}
+	let about = document.getElementById("about");
+	about.style.display = "block";
+	about.style.zIndex = 2048;
+}
+
+document.getElementById("close_about").onclick = function() {
+	let about = document.getElementById("about");
+	about.style.display = "none";
+	about.style.zIndex = 0;
 }
 
 document.getElementById("credits_btn").onclick = function() {
-	let navigationEl = document.getElementById("navigation");
-	navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
-	let creditsImg = document.getElementById("credits_img");
-	creditsImg.style.display = "block";
-	creditsImg.onclick = function(e) {
-		e.target.style.display = "none";
-		let navigationEl = document.getElementById("navigation");
-		navigationEl.style.display = (navigationEl.style.display === "block") ? "none" : "block";
-	}
+	let credits = document.getElementById("credits");
+	credits.style.display = "block";
+	credits.style.zIndex = 2048;
 }
+
+document.getElementById("close_credits").onclick = function() {
+	let credits = document.getElementById("credits");
+	credits.style.display = "none";
+	credits.style.zIndex = 0;
+}
+
+
+let fileToShare = null;
+let codeToShare = null;
+let storageUrl = "https://safecast-live-us-west-2-ith8aefe.s3.us-west-2.amazonaws.com/";
+
+let sharing = function() {
+	elms.sharingCvs.style.display = "block";
+	elms.sharingCvs.style.zIndex = 2048;
+	elms.sharingCvs.width = vw;
+	elms.sharingCvs.height = vh;
+	// ImageDatas for branding, map and letters
+	let bID = brandingCvsCtx.getImageData(0, 0, elms.brandingCvs.width, elms.brandingCvs.height);
+	sharingCvsCtx.putImageData(bID, 0, 0);
+	let sID = showCvsCtx.getImageData(0, 0, elms.showCvs.width, elms.showCvs.height);
+	let tID = txtCvsCtx.getImageData(0, 0, elms.txtCvs.width, elms.txtCvs.height);
+	
+	for(let i = 0; i < sID.data.length; i+=4) {
+		if(sID.data[i+3] === 0) {
+			let greyscale = getRandomInt(255);
+			sID.data[i+0] = greyscale;
+			sID.data[i+1] = greyscale;
+			sID.data[i+2] = greyscale;
+			sID.data[i+3] = 255;
+		}
+
+		if(tID.data[i+3] === 0) {
+			continue;
+		}
+
+
+
+		sID.data[i+0] = tID.data[i+0];
+		sID.data[i+1] = tID.data[i+1];
+		sID.data[i+2] = tID.data[i+2];
+	}
+
+	sharingCvsCtx.putImageData(sID, 44, 0);
+
+	imgBlob = elms.sharingCvs.toBlob(processBlob, "image/png");
+}
+
+let processBlob = function(blobFromCanvas) {
+	let timestamp = ts.toString(16);
+	let randomString = timestamp + "-";
+
+	for(let i = 0; i < 8; i++) {
+		let randomHexDigit = getRandomInt(16).toString(16);
+		randomString += randomHexDigit;
+	}
+
+	codeToShare = randomString;
+
+	fileToShare = new File([ blobFromCanvas ], randomString + ".png", {type: blobFromCanvas.type});
+
+	let shareXhr = new XMLHttpRequest();
+	shareXhr.open("PUT", storageUrl + fileToShare.name, true);
+	shareXhr.onreadystatechange = function() {
+		if(shareXhr.readyState === XMLHttpRequest.DONE) {
+			let linkToSharedPic = "/shared.html?code=" + codeToShare;
+			let sharingLink = document.getElementById("sharingLink");
+			sharingLink.href = linkToSharedPic;
+			sharingLink.style.display = "block";
+			sharingLink.style.zIndex = 2049;
+		}
+	}
+
+	shareXhr.send(fileToShare);
+}
+
+elms.sharingCvs.onclick = function() {
+	elms.sharingCvs.width = 1;
+	elms.sharingCvs.height = 1;
+	elms.sharingCvs.style.zIndex = 0;
+	elms.sharingCvs.style.display = "none";
+
+	let sharingLink = document.getElementById("sharingLink");
+	sharingLink.href = "#";
+	sharingLink.style.display = "none";
+	sharingLink.style.zIndex = 0;
+}
+
+document.getElementById("share_btn").onclick = sharing;
+
 
